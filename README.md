@@ -21,6 +21,10 @@ The skills are then available as `/claude-skills:prd`, `/claude-skills:sdd` and 
 
 To try without installing, run Claude Code with `--plugin-dir /path/to/claude-skills`.
 
+## Update
+
+The plugin tracks the latest commit on `main` (no pinned version). A push does not reach installed copies by itself: run `/plugin marketplace update claude-skills` in Claude Code, or turn on auto-update for this marketplace in `/plugin` (Marketplaces tab) to refresh at session start.
+
 ## Conventions
 
 - **Structure in English, prose in the input language.** The artifacts `prd` and `sdd` produce (PRDs, specs, designs, task plans, ADRs) have fixed English headings, labels, tags (`[ASSUMPTION]`, `[GAP]`) and field names, because the form checks compare them literally. The prose follows the language of the request, the repository convention or the source material, in that order of precedence.

@@ -1,8 +1,16 @@
 {
   "name": "claude-skills",
   "description": "Product requirements (prd), spec-driven development (sdd) and Whisper transcript correction (transcript-fix) skills.",
-  "version": "1.0.0",
-  "author": { "name": "Guilherme Salvi", "url": "https://github.com/guilhermesalvi" },
+  "author": {
+    "name": "Guilherme Salvi",
+    "url": "https://github.com/guilhermesalvi"
+  },
   "repository": "https://github.com/guilhermesalvi/claude-skills",
-  "keywords": ["prd", "sdd", "spec-driven-development", "transcript", "whisper"]
+  "keywords": [
+    "prd",
+    "sdd",
+    "spec-driven-development",
+    "transcript",
+    "whisper"
+  ]
 }
