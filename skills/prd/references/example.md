@@ -1,187 +1,188 @@
-# Exemplo de PRD no formato-alvo
+# Example PRD in the target format
 
-Exemplo completo de PRD de um único contexto, sem PRD 0000. Leia a seção correspondente na primeira vez, nesta sessão, em que escrever uma seção da tabela de writing.md; não é template a copiar. As regras que ele aplica estão em writing.md. Os números (lead time, percentuais, prazos) são ilustrativos. As referências normativas foram lidas na data indicada; a Circular BCB aparece marcada como `[ASSUMPTION]` porque o artigo não foi conferido no texto.
+Complete example of a single-context PRD, without PRD 0000. Read the corresponding section the first time, in this session, you write a section from the writing.md table; it is not a template to copy. The rules it applies are in writing.md. The numbers (lead time, percentages, deadlines) are illustrative. The normative references were read on the indicated date; the BCB Circular is tagged `[ASSUMPTION]` because the article was not checked in the text.
 
 ````markdown
-# Verificação Assíncrona de Documentos para Onboarding
+# Asynchronous Document Verification for Onboarding
 
 | | |
 |---|---|
 | **Originating Context** | Customer Onboarding; affects Account Activation, Compliance Review |
 
-Requirement prefix: `ONB`. Contexto único, portanto não há PRD 0000.
+Requirement prefix: `ONB`. Single context, therefore there is no PRD 0000.
 
 ## Executive Summary
 
-O onboarding de clientes PJ depende de troca de e-mails entre operações e compliance para verificar documentos, com lead time de 5 dias úteis e retrabalho recorrente por submissão fora do padrão. A proposta substitui essa troca por um caso de verificação com estado explícito: a submissão acontece sem depender da agenda de compliance, cada item é validado contra critério definido e a elegibilidade de ativação deriva do estado do caso. A métrica primária é o lead time da submissão completa à ativação em até 1 dia útil.
+Onboarding of business customers depends on email exchanges between operations and compliance to verify documents, with a lead time of 5 business days and recurring rework due to non-standard submissions. The proposal replaces that exchange with a verification case with explicit state: submission happens without depending on compliance's schedule, each item is validated against a defined criterion and activation eligibility derives from the state of the case. The primary metric is the lead time from complete submission to activation within 1 business day.
 
 ## Strategic Alignment
 
-Time-to-revenue é o objetivo do trimestre. Concorrentes ativam em D+1 e o gargalo de verificação é a maior parcela do nosso lead time. Digitalizar o fluxo é pré-condição para o self-service de v2.
+Time-to-revenue is the quarter's objective. Competitors activate on D+1 and the verification bottleneck is the largest share of our lead time. Digitizing the flow is a precondition for the v2 self-service.
 
 ## Context and Problem
 
-A verificação é manual, feita por e-mail e planilha entre operações e compliance. O lead time médio é de 5 dias úteis, e 30% dos casos voltam por documento fora do padrão.
+Verification is manual, done by email and spreadsheet between operations and compliance. The average lead time is 5 business days, and 30% of cases come back because of non-standard documents.
 
-A ativação da conta só ocorre depois da aprovação de compliance, e hoje essa aprovação é uma mensagem de e-mail sem registro estruturado.
+Account activation only happens after compliance approval, and today that approval is an email message with no structured record.
 
 ## Target User / JTBD
 
-- Analista de compliance: validar cada documento contra critério definido, com rastro, sem coordenar por inbox.
-- Operador de onboarding: saber em que pé está cada cliente e o que falta, sem perguntar a compliance.
-- Account Activation (contexto consumidor): saber se o cliente está elegível para ativação sem interpretar e-mails.
+- Compliance analyst: validate each document against a defined criterion, with a trail, without coordinating by inbox.
+- Onboarding operator: know where each customer stands and what is missing, without asking compliance.
+- Account Activation (consuming context): know whether the customer is eligible for activation without interpreting emails.
 
 ## Proposed Solution
 
-Um caso de verificação por cliente, com itens (um por documento exigido) e uma máquina de estados explícita. Os rótulos das transições citam o requisito que governa cada uma.
+One verification case per customer, with items (one per required document) and an explicit state machine. The transition labels cite the requirement that governs each one.
 
 ```mermaid
 stateDiagram-v2
-    [*] --> AwaitingDocuments: convite (ONB-01)
-    AwaitingDocuments --> UnderReview: submissão completa (ONB-03)
-    UnderReview --> Approved: todos os itens aprovados (ONB-07)
-    UnderReview --> PendingResubmission: item rejeitado (ONB-06)
-    PendingResubmission --> UnderReview: reenvio (ONB-08)
-    UnderReview --> Declined: recusa (ONB-09)
-    PendingResubmission --> Declined: prazo esgotado (ONB-10)
+    [*] --> AwaitingDocuments: invitation (ONB-01)
+    AwaitingDocuments --> UnderReview: complete submission (ONB-03)
+    UnderReview --> Approved: all items approved (ONB-07)
+    UnderReview --> PendingResubmission: item rejected (ONB-06)
+    PendingResubmission --> UnderReview: resubmission (ONB-08)
+    UnderReview --> Declined: refusal (ONB-09)
+    PendingResubmission --> Declined: deadline expired (ONB-10)
 ```
 
-| Estado | Identifier | Significado |
+| State | Identifier | Meaning |
 |---|---|---|
-| Aguardando documentos | `AwaitingDocuments` | Convite ativo; itens exigidos ainda não submetidos por completo |
-| Em análise | `UnderReview` | Todos os itens submetidos; compliance valida |
-| Com pendência | `PendingResubmission` | Pelo menos um item rejeitado; só esses aceitam reenvio |
-| Aprovado | `Approved` | Todos os itens aprovados; elegível para ativação; terminal |
-| Recusado | `Declined` | Recusa de compliance ou prazo esgotado; terminal |
+| Awaiting documents | `AwaitingDocuments` | Active invitation; required items not yet fully submitted |
+| Under review | `UnderReview` | All items submitted; compliance validates |
+| Pending resubmission | `PendingResubmission` | At least one item rejected; only those accept resubmission |
+| Approved | `Approved` | All items approved; eligible for activation; terminal |
+| Declined | `Declined` | Compliance refusal or deadline expired; terminal |
 
-Armazenamento de documentos, notificação, filas e desenho de tela são downstream.
+Document storage, notification, queues and screen design are downstream.
 
 ## Domain Glossary
 
-| Termo | Definição |
+| Term | Definition |
 |---|---|
-| Caso de verificação | Conjunto de itens exigidos de um cliente e o estado resultante. Um por cliente por onboarding. |
-| Item | Um documento exigido pelo checklist, com estado próprio: pendente, aprovado, rejeitado. |
-| Checklist | Lista de itens exigidos por tipo de cliente. Definida por compliance (ONB-05). |
-| Submissão completa | Instante em que todo item do checklist tem documento anexado (ONB-03). |
-| Elegibilidade de ativação | Propriedade derivada do estado do caso (ONB-11); não é decisão do operador. |
+| Verification case | The set of items required from a customer and the resulting state. One per customer per onboarding. |
+| Item | One document required by the checklist, with its own state: pending, approved, rejected. |
+| Checklist | List of items required per customer type. Defined by compliance (ONB-05). |
+| Complete submission | The instant when every checklist item has a document attached (ONB-03). |
+| Activation eligibility | Property derived from the state of the case (ONB-11); not an operator decision. |
 
 ## Functional Requirements
 
-Cada requisito é uma condição verificável.
+Each requirement is a verifiable condition.
 
-### Submissão
+### Submission
 
-- **ONB-01 (Must)** Todo caso nasce em Aguardando documentos a partir de um convite ativo; não há criação em outro estado.
-- **ONB-02 (Must)** Na v1 o operador de onboarding submete os documentos em nome do cliente, a qualquer momento enquanto o convite está ativo, independentemente da disponibilidade de compliance.
-- **ONB-03 (Must)** O caso passa a Em análise no instante em que todo item do checklist tem documento anexado.
-- **ONB-04 (Must)** O sistema rejeita no ato o item cujo formato ou tamanho não atende ao checklist e informa o critério violado.
+- **ONB-01 (Must)** Every case starts in Awaiting documents from an active invitation; there is no creation in another state.
+- **ONB-02 (Must)** In v1 the onboarding operator submits the documents on behalf of the customer, at any time while the invitation is active, regardless of compliance's availability.
+- **ONB-03 (Must)** The case moves to Under review the instant every checklist item has a document attached.
+- **ONB-04 (Must)** The system rejects on the spot an item whose format or size does not meet the checklist and reports the violated criterion.
 
-### Validação
+### Validation
 
-- **ONB-05 (Must)** O checklist por tipo de cliente é definido por compliance e versionado; o caso usa a versão vigente no convite.
-- **ONB-06 (Must)** Rejeição de item exige motivo entre os critérios do checklist e leva o caso a Com pendência.
-- **ONB-07 (Must)** O caso passa a Aprovado quando todo item está aprovado; Aprovado é terminal.
-- **ONB-08 (Must)** Em Com pendência, só itens rejeitados aceitam reenvio; o reenvio leva o caso a Em análise.
-- **ONB-09 (Must)** Compliance pode recusar o caso em Em análise com motivo registrado; Recusado é terminal.
-- **ONB-10 (Must)** Caso em Com pendência por mais de 10 dias úteis passa a Recusado com motivo "prazo esgotado".
+- **ONB-05 (Must)** The checklist per customer type is defined by compliance and versioned; the case uses the version in force at the invitation.
+- **ONB-06 (Must)** Rejecting an item requires a reason among the checklist criteria and moves the case to Pending resubmission.
+- **ONB-07 (Must)** The case moves to Approved when every item is approved; Approved is terminal.
+- **ONB-08 (Must)** In Pending resubmission, only rejected items accept resubmission; resubmission moves the case to Under review.
+- **ONB-09 (Must)** Compliance may refuse a case in Under review with a recorded reason; Declined is terminal.
+- **ONB-10 (Must)** A case in Pending resubmission for more than 10 business days moves to Declined with reason "deadline expired".
 
-### Ativação e auditoria
+### Activation and audit
 
-- **ONB-11 (Must)** Elegibilidade de ativação é verdadeira se e somente se o caso está Aprovado.
-- **ONB-12 (Must)** Toda submissão, validação e transição registra autor, instante e motivo, consultável por caso e por cliente.
+- **ONB-11 (Must)** Activation eligibility is true if and only if the case is Approved.
+- **ONB-12 (Must)** Every submission, validation and transition records author, instant and reason, queryable by case and by customer.
 
 ## Non-functional Requirements
 
-- **ONB-NFR-01** Submissão completa é refletida como Em análise em até 1 minuto.
-- **ONB-NFR-02** Documentos de caso Recusado são retidos por no máximo 30 dias após a recusa, salvo obrigação legal de guarda, que prevalece pelo prazo que ela fixar.
-- **ONB-NFR-03** Dados pessoais não aparecem em rastros de execução; identificadores de caso e de item bastam.
+- **ONB-NFR-01** A complete submission is reflected as Under review within 1 minute.
+- **ONB-NFR-02** Documents of a Declined case are retained for at most 30 days after the refusal, except for a legal retention obligation, which prevails for the period it sets.
+- **ONB-NFR-03** Personal data does not appear in execution traces; case and item identifiers suffice.
 
 ## Regulatory Considerations
 
-Textos lidos em 2026-09-05.
+Texts read on 2026-09-05.
 
-- [ASSUMPTION] Circular BCB 3.978/2020, art. 2º: identificação e qualificação do cliente antes do início do relacionamento → ONB-05, ONB-11. Validar com compliance se o checklist atual cobre a qualificação.
-- LGPD, art. 15, I: o tratamento termina quando a finalidade é alcançada → ONB-NFR-02.
-- LGPD, art. 16, I: conservação permitida para cumprimento de obrigação legal → exceção de ONB-NFR-02.
-- [GAP] Regulação setorial além de KYC e LGPD para o segmento PJ não foi levantada; validar com compliance.
+- [ASSUMPTION] BCB Circular 3.978/2020, art. 2: identification and qualification of the customer before the start of the relationship → ONB-05, ONB-11. Validate with compliance whether the current checklist covers qualification.
+- LGPD, art. 15, I: processing ends when the purpose is achieved → ONB-NFR-02.
+- LGPD, art. 16, I: retention allowed to comply with a legal obligation → exception to ONB-NFR-02.
+- [GAP] Sector regulation beyond KYC and LGPD for the business segment was not surveyed; validate with compliance.
 
 ## Non-goals
 
-- Onboarding de outros segmentos (consumidor, enterprise com contrato customizado).
-- Assinatura digital de contrato.
-- Self-service do cliente para atualização contínua de cadastro.
-- Revisão do mérito das regras do checklist.
+- Onboarding of other segments (consumer, enterprise with a custom contract).
+- Digital contract signature.
+- Customer self-service for continuous registration updates.
+- Reviewing the merit of the checklist rules.
 
 ## Declared Trade-offs
 
-- **v1 sem self-service direto do cliente (ONB-02).** *Cost:* operações continua intermediária no upload; carga humana parcialmente preservada. *Reason:* validar o fluxo internamente antes de expor reduz risco reputacional e regulatório; self-service é v2.
-- **Checklist modelado a partir do processo atual, sem revisitar o mérito.** *Cost:* regra legada de baixo valor persiste no fluxo digital. *Reason:* revisitar mérito cruza a fronteira de compliance e expande escopo; é iniciativa separada depois da baseline digital.
-- **Prazo de pendência fixo em 10 dias úteis.** *Cost:* cliente lento é recusado e precisa de novo convite. *Reason:* caso aberto sem fim inflaria o lead time medido e o estoque de compliance.
+- **v1 without direct customer self-service (ONB-02).** *Cost:* operations remains an intermediary in the upload; human load partially preserved. *Reason:* validating the flow internally before exposing it reduces reputational and regulatory risk; self-service is v2.
+- **Checklist modeled from the current process, without revisiting the merit.** *Cost:* a low-value legacy rule persists in the digital flow. *Reason:* revisiting the merit crosses the compliance boundary and expands scope; it is a separate initiative after the digital baseline.
+- **Pending deadline fixed at 10 business days.** *Cost:* a slow customer is declined and needs a new invitation. *Reason:* an open-ended case would inflate the measured lead time and the compliance backlog.
 
 ## Success Metrics
 
-- Leading: 80% dos onboardings iniciados pelo novo fluxo em 30 dias; resposta de compliance em até 4 h após Em análise.
-- Lagging: lead time da submissão completa à ativação em até 1 dia útil em 90% dos casos após 60 dias; zero retrabalho por documento fora do padrão.
-- Guardrails: taxa de rejeição em auditoria pós-onboarding no baseline ou abaixo; tickets de suporte abertos pelo cliente durante o onboarding no baseline ou abaixo; tempo efetivo de análise estável (o ganho vem de eliminar espera, não de acelerar análise).
+- Leading: 80% of onboardings started through the new flow within 30 days; compliance response within 4 h after Under review.
+- Lagging: lead time from complete submission to activation within 1 business day in 90% of cases after 60 days; zero rework due to non-standard documents.
+- Guardrails: rejection rate in post-onboarding audit at or below baseline; support tickets opened by the customer during onboarding at or below baseline; effective review time stable (the gain comes from eliminating waiting, not from speeding up review).
 
 ## Acceptance Criteria
 
-Os cenários assumem checklist com 3 itens e prazo de pendência de 10 dias úteis.
+The scenarios assume a checklist with 3 items and a pending deadline of 10 business days.
 
-| Caso | Entrada | Intermediários | Ramo | Resultado |
+| Case | Input | Intermediate | Branch | Result |
 |---|---|---|---|---|
-| Submissão completa | 3 itens anexados às 10h00 | todos no padrão | ONB-03 | Em análise até 10h01 (ONB-NFR-01) |
-| Item fora do padrão | item 2 em formato não aceito | critério violado: formato | ONB-04 | item recusado no ato; caso segue Aguardando documentos |
-| Rejeição parcial | itens 1 e 3 aprovados, 2 rejeitado | motivo do checklist | ONB-06 | Com pendência; só o item 2 aceita reenvio (ONB-08) |
-| Reenvio parcial com dois rejeitados | itens 2 e 3 rejeitados, só o 2 reenviado | item 3 continua rejeitado | ONB-08 | caso vai a Em análise com o item 3 ainda rejeitado; o reenvio do item 1 (aprovado) não é aceito |
-| Aprovação | reenvio do item 2 aprovado | 3 de 3 aprovados | ONB-07 | Aprovado; elegibilidade verdadeira (ONB-11) |
-| Prazo esgotado | Com pendência há 11 dias úteis | sem reenvio | ONB-10 | Recusado, motivo "prazo esgotado"; elegibilidade falsa |
+| Complete submission | 3 items attached at 10:00 | all within standard | ONB-03 | Under review by 10:01 (ONB-NFR-01) |
+| Non-standard item | item 2 in a non-accepted format | violated criterion: format | ONB-04 | item refused on the spot; case stays Awaiting documents |
+| Partial rejection | items 1 and 3 approved, 2 rejected | checklist reason | ONB-06 | Pending resubmission; only item 2 accepts resubmission (ONB-08) |
+| Partial resubmission with two rejected | items 2 and 3 rejected, only 2 resubmitted | item 3 still rejected | ONB-08 | case moves to Under review with item 3 still rejected; resubmission of item 1 (approved) is not accepted |
+| Approval | resubmission of item 2 approved | 3 of 3 approved | ONB-07 | Approved; eligibility true (ONB-11) |
+| Deadline expired | Pending resubmission for 11 business days | no resubmission | ONB-10 | Declined, reason "deadline expired"; eligibility false |
 
-- **Given** um cliente Aprovado, **when** um auditor consulta o histórico, **then** vê toda submissão, validação e transição com autor, instante e motivo (ONB-12).
+- **Given** an Approved customer, **when** an auditor queries the history, **then** they see every submission, validation and transition with author, instant and reason (ONB-12).
 
 ## Dependencies and Risks
 
-| Item | Tipo | Impacto |
+| Item | Type | Impact |
 |---|---|---|
-| Definição do checklist por tipo de cliente | Dependência de negócio | Bloqueante: sem checklist não há caso |
-| Account Activation | Acoplamento entre contextos | Lê a elegibilidade; ONB-11 é o contrato, e mudança de estado sem aviso quebra a ativação |
-| Compliance Review | Acoplamento entre contextos | Recebe o caso em pendência; a revisão parte do estado que este contexto publica, e sem ele a fila de compliance não abre |
-| Migração de clientes em onboarding | Risco | Casos em curso precisam de estado inicial equivalente |
+| Checklist definition per customer type | Business dependency | Blocking: without a checklist there is no case |
+| Account Activation | Coupling between contexts | Reads eligibility; ONB-11 is the contract, and a state change without notice breaks activation |
+| Compliance Review | Coupling between contexts | Receives the pending case; the review starts from the state this context publishes, and without it the compliance queue does not open |
+| Migration of customers in onboarding | Risk | In-flight cases need an equivalent initial state |
 
 ## Open Questions
 
-- **[ASSUMPTION] O lead time é causado pela troca manual e pela espera, não pela complexidade da análise; if false, a análise continua custosa depois da digitalização, o ganho é marginal e a iniciativa não se paga.** Dono: operações. Resolve-se medindo o tempo efetivo de análise em 20 casos antes de aprovar.
-- Há regulação setorial além de KYC e LGPD para o segmento PJ que acrescente itens ao checklist (ONB-05)? É a `[GAP]` registrada em Regulatory Considerations. Dono: compliance. Resolve-se com parecer por escrito antes de aprovar.
+- **[ASSUMPTION] The lead time is caused by the manual exchange and the waiting, not by the complexity of the review; if false, the review remains costly after digitization, the gain is marginal and the initiative does not pay off.** Owner: operations. Resolved by measuring the effective review time in 20 cases before approving.
+- Is there sector regulation beyond KYC and LGPD for the business segment that adds items to the checklist (ONB-05)? It is the `[GAP]` recorded in Regulatory Considerations. Owner: compliance. Resolved with a written opinion before approving.
 
 ## Weakest Point
 
-A decisão de **modelar o checklist a partir do processo atual sem revisitar o mérito das regras**, registrada em Declared Trade-offs.
+The decision to **model the checklist from the current process without revisiting the merit of the rules**, recorded in Declared Trade-offs.
 
-*Vetor de ataque:* digitalizar um processo manual ruim entrega um processo digital ruim, mais rápido. Se uma fração relevante das rejeições atuais vem de regra legada dispensável, "zero retrabalho" não é alcançável sem tocar no mérito, e adiar a revisão para "iniciativa separada" protege a causa-raiz.
+*Attack vector:* digitizing a bad manual process delivers a bad digital process, faster. If a relevant share of current rejections comes from a dispensable legacy rule, "zero rework" is not reachable without touching the merit, and deferring the review to a "separate initiative" protects the root cause.
 
-*Desafie antes de aprovar:* há evidência de que o checklist atual é majoritariamente valor real e não cerimônia herdada? Sem ela, mova uma triagem mínima de mérito para a v1 ou rebaixe a meta de retrabalho até a baseline digital existir.
+*Challenge before approving:* is there evidence that the current checklist is mostly real value and not inherited ceremony? Without it, move a minimal merit triage into v1 or lower the rework goal until the digital baseline exists.
 
 ## References
 
-- [Circular BCB 3.978/2020](https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Circular&numero=3978), art. 2º. Lida em 2026-09-05.
-- [Lei 13.709/2018 (LGPD)](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm), arts. 15 e 16. Lida em 2026-09-05.
+- [BCB Circular 3.978/2020](https://www.bcb.gov.br/estabilidadefinanceira/exibenormativo?tipo=Circular&numero=3978), art. 2. Read on 2026-09-05.
+- [Law 13.709/2018 (LGPD)](https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm), arts. 15 and 16. Read on 2026-09-05.
 ````
 
-## Exemplo parcial de redação
+## Partial writing example
 
-O fragmento didático a seguir demonstra estilo e não entra no PRD gerado.
+The didactic fragment below demonstrates style and does not enter the generated PRD.
 
 ```text
-Exemplo didático de reescrita; as duas frases exprimem o mesmo comportamento.
+Didactic rewrite example; both sentences express the same behavior.
 
-Antes: Se for realizada a submissão de um item cujo formato ou tamanho não
-atenda ao checklist, deverá ser feita a rejeição no ato e a informação do
-critério que foi violado.
+Before: In the event that a submission is made of an item whose format or
+size does not meet the checklist, the rejection shall be carried out on the
+spot together with the provision of information about the criterion that
+was violated.
 
-Depois: O sistema rejeita no ato o item cujo formato ou tamanho não atende
-ao checklist e informa o critério violado.
+After: The system rejects on the spot an item whose format or size does not
+meet the checklist and reports the violated criterion.
 
-Preservado: condição de rejeição, momento da resposta e informação devolvida.
-A definição normativa do exemplo completo continua sendo ONB-04.
+Preserved: rejection condition, moment of the response and information
+returned. The normative definition of the complete example remains ONB-04.
 ```

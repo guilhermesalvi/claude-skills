@@ -31,7 +31,7 @@ The plugin tracks the latest commit on `main` (no pinned version). A push does n
 - **Repository conventions win.** Default paths (`docs/prd`, `docs/specs`, `docs/adr`), test gates and section lists are skill defaults; a convention written in the repository's `CLAUDE.md` overrides them.
 - **Scripts need Python 3.10+**, standard library only.
 
-The instructions of `prd` and `sdd` are written in Portuguese; `transcript-fix` is written in English. All three work regardless of the language of the conversation.
+All three skills are written in English and work regardless of the language of the conversation.
 
 ## Layout
 

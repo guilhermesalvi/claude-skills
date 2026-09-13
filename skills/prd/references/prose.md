@@ -1,31 +1,31 @@
-# Escrita da PRD
+# Writing the PRD
 
-## Convenções de escrita
+## Writing conventions
 
-Apresente primeiro a informação de que o leitor precisa para decidir: problema, comportamento, decisão ou pendência. Desenvolva a explicação com os fatos e as referências necessários. O título e o contexto já identificam o documento; evite uma abertura que apenas anuncie sua existência.
+Present first the information the reader needs in order to decide: problem, behavior, decision or open item. Develop the explanation with the necessary facts and references. The title and the context already identify the document; avoid an opening that merely announces its existence.
 
-Organize cada parágrafo em torno de uma ideia. Mantenha na mesma unidade a explicação que sustenta essa ideia; se houver uma decisão independente, abra outro parágrafo. Preserve causas, custos e restrições que expliquem a decisão.
+Organize each paragraph around one idea. Keep in the same unit the explanation that supports that idea; if there is an independent decision, open another paragraph. Preserve causes, costs and constraints that explain the decision.
 
-Escolha verbos que indiquem a ação e identifique o responsável quando a informação existir. Substitua elogios e qualificadores genéricos pelo comportamento ou pela evidência disponível. Se a fonte não define uma medida, registre a lacuna pelas regras de tags; não invente um número para melhorar a aparência do texto.
+Choose verbs that indicate the action and identify the responsible party when the information exists. Replace praise and generic qualifiers with the available behavior or evidence. If the source does not define a measure, record the gap by the tag rules; do not invent a number to improve the look of the text.
 
-Use o vocabulário do domínio. Preserve identificadores, nomes de eventos, unidades, modalidade, negações e limites. Uma permissão não pode virar obrigação durante a revisão. Explique um termo apenas quando o público ou o contexto exigir, usando o glossário já definido.
+Use the vocabulary of the domain. Preserve identifiers, event names, units, modality, negations and limits. A permission cannot become an obligation during review. Explain a term only when the audience or the context demands it, using the glossary already defined.
 
-Empregue parágrafos para explicações; listas para requisitos, passos e itens paralelos; tabelas para comparar alternativas ou relacionar valores. A estrutura obrigatória do artefato continua valendo. Uma explicação não precisa virar lista só para ficar mais curta.
+Use paragraphs for explanations; lists for requirements, steps and parallel items; tables to compare alternatives or relate values. The mandatory structure of the artifact still applies. An explanation does not need to become a list just to be shorter.
 
-Remova introduções, conclusões repetidas e frases que apenas enfatizam a importância do que vem depois. Contraste é útil quando distingue alternativas ou limites reais. Preserve proibições de segurança e exclusões de escopo; elimine apenas contraposições que não acrescentem uma distinção necessária.
+Remove introductions, repeated conclusions and sentences that only stress the importance of what comes next. Contrast is useful when it distinguishes real alternatives or limits. Preserve security prohibitions and scope exclusions; remove only counterpoints that add no necessary distinction.
 
-## Texto de instruções
+## Instruction text
 
-Em uma instrução condicional, indique quando agir, qual ação executar e qual saída esperar. Explicite a exceção junto da regra ou remeta ao heading exato que a define. Um procedimento sequencial pode usar passos numerados; uma decisão com ramos pode usar tabela. Explicações de contexto não precisam seguir esse formato.
+In a conditional instruction, state when to act, which action to take and which output to expect. Make the exception explicit next to the rule or point to the exact heading that defines it. A sequential procedure may use numbered steps; a decision with branches may use a table. Context explanations do not need to follow that format.
 
-Use um nome explícito quando expressões como “isso”, “o anterior” ou “a mesma regra” puderem apontar para mais de um elemento. Ao citar uma referência, informe o arquivo e a seção pertinentes. As regras têm uma fonte normativa; o restante aponta para ela.
+Use an explicit name when expressions like "this", "the previous one" or "the same rule" could point to more than one element. When citing a reference, give the pertinent file and section. Rules have one normative source; everything else points to it.
 
-## Texto do artefato
+## Artifact text
 
-A forma e o conteúdo de cada seção são definidos em writing.md. A gravação e o idioma são definidos em conventions.md. Aplique estas convenções de escrita dentro dessas regras. Instruções ao agente, notas de revisão e exemplos didáticos não entram no PRD final.
+The form and content of each section are defined in writing.md. Saving and language are defined in conventions.md. Apply these writing conventions within those rules. Instructions to the agent, review notes and didactic examples do not enter the final PRD.
 
-## Checklist editorial
+## Editorial checklist
 
-Confira na revisão já prevista: a informação principal está identificável; cada parágrafo tem uma ideia; o responsável e as condições não são ambíguos; termos e modalidades foram preservados; fatos e incertezas continuam distinguíveis; a formatação corresponde à informação; nenhuma frase repete a regra sem necessidade.
+Check, in the review already planned: the main information is identifiable; each paragraph has one idea; the responsible party and the conditions are unambiguous; terms and modalities were preserved; facts and uncertainties remain distinguishable; formatting matches the information; no sentence repeats the rule without need.
 
-Esta checagem não cria nota, seção ou ciclo adicional. Corrija dentro da revisão existente. Se uma melhoria de redação exigir uma decisão de negócio, registre a lacuna e preserve o sentido original até a decisão.
+This check does not create a score, section or additional cycle. Fix within the existing review. If a writing improvement requires a business decision, record the gap and preserve the original meaning until the decision.

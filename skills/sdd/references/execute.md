@@ -1,84 +1,84 @@
 # Execute
 
-**Objetivo:** implementar uma task por vez. Cada task é um entregável coeso, com teste derivado da spec, gate rodado e commit atômico quando o commit está autorizado. Cada task carrega a própria verificação (testes, gate e revisão pós-gate).
+**Goal:** implement one task at a time. Each task is a cohesive deliverable, with tests derived from the spec, the gate run and an atomic commit when commit is authorized. Each task carries its own verification (tests, gate and post-gate review).
 
-## Antes da primeira task
+## Before the first task
 
-1. **Pré-requisito.** O da tabela de workflow.md, Abrir uma mudança. O pedido "implementa" autoriza editar os arquivos da mudança; commit é uma autorização própria, dada uma vez por mudança e válida para todos os commits dela (workflow.md, Aprovação e autorizações).
-2. **Contexto.** Leia a task, o trecho do design que ela referencia e os requisitos da spec que ela atende. Não carregue outras mudanças no contexto.
-3. **Base da verificação.** Se a mudança não tem branch próprio nem pasta `NNNN-<change-slug>` (as regras 2 e 3 de verify.md, Escopo, não devolvem hash), registre a base antes da primeira edição de código: `git rev-parse HEAD`, gravado como a linha `Base: <hash>` do parágrafo "How this repository tests" do `tasks.md` ou como o slot `; base: <hash>` da linha `Gate` do plano inline. Com branch próprio ou pasta da mudança, não registre nada: o Verify resolve a base sozinho, e um hash a mais seria uma segunda fonte da mesma informação.
-4. **`[GAP]` no caminho.** Vale a regra de workflow.md, Tags e dúvidas; numa task, as três saídas tomam esta forma:
-   - decida e registre a decisão, quando ela cabe na autonomia concedida;
-   - marque `[ASSUMPTION]` na spec, com default e racional; a spec alterada entra no commit da task após a aprovação de seu conteúdo (workflow.md, Aprovação e autorizações); sem commit, siga a condição de Depois da última task;
-   - pergunte ao usuário ("O design tem uma lacuna: […]. Opções: […]. Recomendo […].") e execute só o que não depende da resposta.
+1. **Prerequisite.** The one in the table of workflow.md, Opening a change. The request "implement it" authorizes editing the files of the change; commit is its own authorization, given once per change and valid for all its commits (workflow.md, Approval and authorizations).
+2. **Context.** Read the task, the passage of the design it references and the spec requirements it satisfies. Do not load other changes into the context.
+3. **Verification base.** If the change has neither its own branch nor an `NNNN-<change-slug>` folder (rules 2 and 3 of verify.md, Scope, return no hash), record the base before the first code edit: `git rev-parse HEAD`, saved as the line `Base: <hash>` of the "How this repository tests" paragraph of `tasks.md` or as the slot `; base: <hash>` of the `Gate` line of the inline plan. With its own branch or a change folder, record nothing: Verify resolves the base on its own, and an extra hash would be a second source of the same information.
+4. **`[GAP]` in the way.** The rule of workflow.md, Tags and doubts applies; in a task, the three outcomes take this form:
+   - decide and record the decision, when it fits within the granted autonomy;
+   - tag `[ASSUMPTION]` in the spec, with default and rationale; the changed spec enters the task commit after approval of its content (workflow.md, Approval and authorizations); without a commit, follow the condition in After the last task;
+   - ask the user ("The design has a gap: […]. Options: […]. I recommend […].") and execute only what does not depend on the answer.
 
-### Plano inline
+### Inline plan
 
-Quando a entrada Tasks foi dispensada, o Execute começa por um plano inline, apresentado no chat antes de qualquer código:
+When the Tasks entry point was waived, Execute starts with an inline plan, presented in the chat before any code:
 
 ```markdown
 ## Plan
-Requirements: [IDs da spec.md que o plano cobre]
-Structure: [uma ou duas linhas: onde entra, o que reusa]
-Gate: [comando de build e teste do repositório]; [total de testes que ele executa antes da mudança][; base: hash, quando a mudança registra a base][; mutation: comando, quando a mudança declara mutação]
-1. [passo] → arquivos: […] → verifica: [como]
+Requirements: [spec.md IDs the plan covers]
+Structure: [one or two lines: where it goes, what it reuses]
+Gate: [build and test command of the repository]; [total tests it runs before the change][; base: hash, when the change records the base][; mutation: command, when the change declares mutation]
+1. [step] → files: […] → verifies: [how]
 2. …
 ```
 
-A linha `Gate` é onde o comando de mutação fica declarado quando a mudança não tem `tasks.md`: acrescente `; mutation: <comando>` a ela quando o usuário pede mutação nesta mudança ou quando a tabela Risks and Techniques do design a obriga (verify.md, Mutation). Sem a declaração, a linha termina no total de testes e a mudança não roda mutação. O slot `; base: <hash>` da mesma linha é onde a base fica quando a mudança não tem `tasks.md`, e entra só nas condições de Base da verificação, acima.
+The `Gate` line is where the mutation command is declared when the change has no `tasks.md`: append `; mutation: <command>` to it when the user asks for mutation in this change or when the Risks and Techniques table of the design requires it (verify.md, Mutation). Without the declaration, the line ends at the test total and the change does not run mutation. The slot `; base: <hash>` of the same line is where the base goes when the change has no `tasks.md`, and it enters only under the conditions of Verification base, above.
 
-Cada passo do plano é um entregável coeso, pelo mesmo critério de uma task (tasks.md, Task atômica). Se a lista disparar um gatilho de design ou tasks, siga a catraca e seus pré-requisitos (workflow.md, Quanto artefato a mudança pede).
+Each step of the plan is a cohesive deliverable, by the same criterion as a task (tasks.md, Atomic task). If the list triggers a design or tasks trigger, follow the ratchet and its prerequisites (workflow.md, How much artifact the change needs).
 
-## Ciclo por task
+## Per-task cycle
 
-1. **Escolher.** Execute a task que o usuário indicou ("faz a T3") ou, sem indicação, a próxima disponível na ordem do plano. Se a task depende de outra ainda não concluída, pergunte antes de começar.
-2. **Declarar o plano da task** em três linhas: os arquivos que vai tocar (só os da task), a abordagem e como vai verificar. Se enxerga uma abordagem mais simples que a do design, ou discorda dele, diga antes de implementar, não depois.
-3. **Escrever os testes derivados da spec.**
-   - Cada requisito da task tem ao menos uma assertion cujo valor esperado é o resultado que a spec define (status, mensagem, estado, evento).
-   - Se a spec não define um resultado preciso, isso é lacuna de precisão: volte à spec e corrija lá; não escreva assertion vaga.
-   - Os cenários herdados listados na Traceability da spec (specify.md, Seções) são a suíte mínima: cada um vira ao menos um teste.
-   - Teste de comportamento novo falha antes de o código existir. Teste de caracterização (comportamento que a mudança preserva) passa antes e depois.
-   - Se um teste parece errado quando confrontado com a spec, pare e confirme o que está certo antes de seguir: os testes são a spec executável.
-4. **Implementar** o mínimo que satisfaz a task.
-   - Nada além do pedido: sem abstração de uso único, sem flexibilidade não solicitada, sem tratamento de cenário impossível.
-   - Não "melhore" código adjacente nem formatação; siga o estilo existente mesmo discordando dele.
-   - Problema vizinho (bug, dívida, dead code) é reportado ao usuário, não corrigido na task.
-   - Arquivo indispensável descoberto durante a implementação (registro, config) entra no campo `Where` da task, com uma nota dizendo por que entrou. A nota é o registro completo e a única rota: o arquivo não vira `SPEC_DEVIATION` nem linha em `## Deviations`, e no eixo 2 do Verify conta como conformidade ao design, não como gap nem como desvio (verify.md, Eixo 2: aderência ao design). Arquivo que muda comportamento não cabe aqui: é desvio, pelo caminho de Refine o contexto, não o erro.
-5. **Rodar o gate.** Rode o comando do nível da task, lido da tabela Gate Commands do `tasks.md` da mudança (descrita em tasks.md, Gate Commands) ou da linha `Gate` do plano inline. Exit diferente de zero: corrija e rode de novo, no máximo duas vezes; se a terceira execução ainda não sair com exit 0, pare e relate a falha como ela é, sem enfraquecer o teste. Gate que não pode rodar (SDK ausente, dependência indisponível) não é gate verde: a task fica bloqueada, com o motivo registrado.
-6. **Revisar depois do gate.** Com o gate verde, confira:
-   - todo item de `Done when` está atendido, inclusive os critérios de comportamento;
-   - nenhum `SPEC_DEVIATION` ficou sem registro em `## Deviations`;
-   - nenhum dos três sinais de complexidade está presente: abstração usada uma vez só, parâmetro ou opção sem chamador, camada que o design não pede. Se algum estiver, simplifique uma vez e rode o gate de novo, uma única vez: se ficar vermelho, desfaça a simplificação, porque o gate verde do passo 5 é o que a task entrega e insistir na simplificação abriria um ciclo de correção sem teto; diga no chat qual simplificação foi desfeita e o que o gate acusou;
-   - a tabela de evidência: para cada critério, o `file:line` e a assertion que o provam; e, no sentido inverso, todo teste novo mapeia para um critério, requisito ou edge case. A tabela vai no chat ao fechar a task e não é persistida em arquivo.
-7. **Fechar.** Marque a task como concluída: todos os itens `- [ ]` de `Done when` passam a `- [x]` no `tasks.md` (ou no plano inline). Com commit autorizado e com a aprovação exigida para conteúdo de artefato alterado (workflow.md, Aprovação e autorizações), faça um commit contendo só os arquivos da task, o `tasks.md` e a spec quando a task a alterou (passo 3), com mensagem no formato que o repositório convenciona; se o repositório tem validação de mensagem de commit, rode-a antes de commitar. Sem commit autorizado, a task fecha com o gate verde e os arquivos na árvore de trabalho.
+1. **Choose.** Execute the task the user indicated ("do T3") or, without indication, the next available one in the order of the plan. If the task depends on another not yet completed, ask before starting.
+2. **Declare the task plan** in three lines: the files it will touch (only those of the task), the approach and how it will verify. If you see a simpler approach than the design's, or disagree with it, say so before implementing, not after.
+3. **Write the tests derived from the spec.**
+   - Each requirement of the task has at least one assertion whose expected value is the result the spec defines (status, message, state, event).
+   - If the spec does not define a precise result, that is a precision gap: go back to the spec and fix it there; do not write a vague assertion.
+   - The inherited scenarios listed in the Traceability of the spec (specify.md, Sections) are the minimum suite: each one becomes at least one test.
+   - A test of new behavior fails before the code exists. A characterization test (behavior the change preserves) passes before and after.
+   - If a test looks wrong when confronted with the spec, stop and confirm which is right before moving on: the tests are the executable spec.
+4. **Implement** the minimum that satisfies the task.
+   - Nothing beyond the request: no single-use abstraction, no unrequested flexibility, no handling of impossible scenarios.
+   - Do not "improve" adjacent code or formatting; follow the existing style even when disagreeing with it.
+   - A neighboring problem (bug, debt, dead code) is reported to the user, not fixed in the task.
+   - An indispensable file discovered during implementation (registration, config) enters the `Where` field of the task, with a note saying why it entered. The note is the complete record and the only route: the file does not become a `SPEC_DEVIATION` nor a line in `## Deviations`, and in axis 2 of Verify it counts as conformance to the design, not as a gap or a deviation (verify.md, Axis 2: design adherence). A file that changes behavior does not fit here: it is a deviation, through the path of Refine the context, not the error.
+5. **Run the gate.** Run the command of the task's level, read from the Gate Commands table of the change's `tasks.md` (described in tasks.md, Gate Commands) or from the `Gate` line of the inline plan. Non-zero exit: fix and run again, at most twice; if the third run still does not exit 0, stop and report the failure as it is, without weakening the test. A gate that cannot run (missing SDK, unavailable dependency) is not a green gate: the task is blocked, with the reason recorded.
+6. **Review after the gate.** With the gate green, check:
+   - every item of `Done when` is satisfied, including the behavior criteria;
+   - no `SPEC_DEVIATION` was left unrecorded in `## Deviations`;
+   - none of the three complexity signals is present: an abstraction used only once, a parameter or option with no caller, a layer the design does not ask for. If one is, simplify once and run the gate again, a single time: if it turns red, undo the simplification, because the green gate of step 5 is what the task delivers and insisting on the simplification would open a correction cycle without a ceiling; say in the chat which simplification was undone and what the gate flagged;
+   - the evidence table: for each criterion, the `file:line` and the assertion that prove it; and, in the reverse direction, every new test maps to a criterion, requirement or edge case. The table goes in the chat when closing the task and is not persisted in a file.
+7. **Close.** Mark the task as completed: every `- [ ]` item of `Done when` becomes `- [x]` in `tasks.md` (or in the inline plan). With commit authorized and with the approval required for the content of a changed artifact (workflow.md, Approval and authorizations), make a commit containing only the files of the task, the `tasks.md` and the spec when the task changed it (step 3), with a message in the format the repository establishes; if the repository has commit message validation, run it before committing. Without an authorized commit, the task closes with the gate green and the files in the working tree.
 
-### Forma da comunicação
+### Communication form
 
-Ao iniciar a task, identifique arquivos, abordagem e verificação na forma já exigida. Ao encerrá-la, apresente resultado e evidência. No bloqueio, indique a ação pendente, o que a impede e qual decisão ou recurso a resolve. Use o nome da task e o arquivo pertinente; não substitua o relato por “está tudo certo”. Mantenha a tabela de evidência exigida e não relate como executado um comando apenas previsto.
+When starting the task, identify files, approach and verification in the form already required. When closing it, present result and evidence. In a block, state the pending action, what prevents it and which decision or resource resolves it. Use the task name and the pertinent file; do not replace the report with "everything is fine". Keep the required evidence table and do not report as executed a command that was only planned.
 
-## Refine o contexto, não o erro
+## Refine the context, not the error
 
-O princípio geral está em workflow.md, Tags e dúvidas. Durante uma task, ele se aplica assim:
+The general principle is in workflow.md, Tags and doubts. During a task, it applies like this:
 
-- **Spec ou design errados** (regra impossível, contrato inconsistente, restrição da base não prevista) param a task. Reporte no chat: "Encontrei uma restrição não prevista: […]. Isso invalida [spec/design] em […]. Recomendo corrigir lá e re-derivar [tasks afetadas]."
-- **Regra de negócio errada** volta ao PRD primeiro; a spec só é corrigida depois dele.
-- **Desvio local** que não invalida o artefato recebe um marcador no código e uma linha em `## Deviations` do `tasks.md` (ou do plano inline, no chat, quando não há `tasks.md`); a seção é criada no primeiro desvio. O marcador:
+- **A wrong spec or design** (impossible rule, inconsistent contract, unforeseen codebase constraint) stops the task. Report in the chat: "I found an unforeseen constraint: […]. It invalidates [spec/design] at […]. I recommend fixing it there and re-deriving [affected tasks]."
+- **A wrong business rule** goes back to the PRD first; the spec is only fixed after it.
+- **A local deviation** that does not invalidate the artifact gets a marker in the code and a line in `## Deviations` of `tasks.md` (or of the inline plan, in the chat, when there is no `tasks.md`); the section is created at the first deviation. The marker:
 
 ```text
-// SPEC_DEVIATION: [o que divergiu]
-// Reason: [por quê]
+// SPEC_DEVIATION: [what diverged]
+// Reason: [why]
 ```
 
-## Segurança
+## Security
 
-- **Pacote novo** é sugestão até que a procedência seja validada no registro oficial: "Sugiro `[nome]`; antes de instalar, confirme em […]". Pacote com nome inventado pode existir no registro, publicado por alguém mal-intencionado.
-- **Segredo**, connection string ou dado de produção encontrado na base nunca entra no output; sinalize a ocorrência como risco.
+- **A new package** is a suggestion until its provenance is validated in the official registry: "I suggest `[name]`; before installing, confirm at […]". A package with an invented name may exist in the registry, published by someone malicious.
+- **A secret**, connection string or production data found in the codebase never enters the output; flag the occurrence as a risk.
 
-## Depois da última task
+## After the last task
 
-Antes do Verify, confirme que a spec utilizada pelos testes corresponde à versão commitada. Se uma task alterou a spec e a alteração ainda não foi commitada, a implementação pode permanecer na árvore de trabalho, mas o Verify fica bloqueado nessa dependência. Peça uma vez o commit ou sua autorização, seguindo (workflow.md, Aprovação e autorizações). Não verificar a implementação contra a spec antiga para contornar o bloqueio. Uma árvore suja por mudanças de código não bloqueia, por si só, o Verify; a verificação continua incluindo as alterações locais previstas no escopo.
+Before Verify, confirm that the spec used by the tests corresponds to the committed version. If a task changed the spec and the change is not yet committed, the implementation may remain in the working tree, but Verify is blocked on that dependency. Ask once for the commit or its authorization, following (workflow.md, Approval and authorizations). Do not verify the implementation against the old spec to work around the block. A tree dirty with code changes does not, by itself, block Verify; the verification still includes the local changes planned in the scope.
 
-Defina `SPEC` como o caminho real da spec relativo à raiz e execute:
+Define `SPEC` as the real path of the spec relative to the root and run:
 
 ```bash
 git cat-file -e "HEAD:$SPEC"
@@ -86,15 +86,15 @@ git diff --quiet -- "$SPEC"
 git diff --cached --quiet -- "$SPEC"
 ```
 
-Os três comandos devem indicar que o arquivo existe em HEAD e não difere no índice nem na árvore de trabalho. Não substitua essa checagem pelo estado global de `git status`.
+The three commands must indicate that the file exists in HEAD and does not differ in the index or in the working tree. Do not replace that check with the global state of `git status`.
 
-- **Verify.** Com essa condição atendida e a última task fechada, passe ao Verify (verify.md, Olhos frescos).
-- **Handoff.** Um branch aberto e o `git log` são o handoff da mudança.
+- **Verify.** With that condition met and the last task closed, move to Verify (verify.md, Fresh eyes).
+- **Handoff.** An open branch and `git log` are the handoff of the change.
 
-## Retomar
+## Resume
 
-Identifique primeiro a próxima entrada válida pelos pré-requisitos (workflow.md, Entradas e pré-requisitos), em vez de presumir Execute pelo nome do pedido.
+First identify the next valid entry point by the prerequisites (workflow.md, Entry points and prerequisites), instead of assuming Execute from the name of the request.
 
-**Com tasks.md:** leia o artefato, os requisitos pertinentes, os pré-requisitos e o `git status`. Uma task só tem conclusão registrada quando todos os itens de `Done when` estão marcados `[x]`, o que exige gate verde. Os checkboxes não autorizam usar evidência de uma versão anterior se os arquivos foram alterados depois; `git status` é indício de progresso, não prova.
+**With tasks.md:** read the artifact, the pertinent requirements, the prerequisites and `git status`. A task only has its completion recorded when every item of `Done when` is marked `[x]`, which requires a green gate. The checkboxes do not authorize using evidence from a previous version if the files were changed afterwards; `git status` is a sign of progress, not proof.
 
-**Sem tasks.md:** recupere da conversa o plano inline aprovado, incluindo requisitos, passos, arquivos, comando de gate, contagem-base e os campos condicionais de base e mutação. Se esse plano não estiver disponível, não adivinhe seus valores pelo código. Reconstitua um plano concreto com o que é comprovável e peça sua aprovação pela regra existente antes de continuar Execute (workflow.md, Aprovação e autorizações). Se a base da verificação não puder ser recuperada pelas rotas de (verify.md, Escopo), mantenha o bloqueio por falta de base. Não crie arquivo de estado ou relatório persistido.
+**Without tasks.md:** recover from the conversation the approved inline plan, including requirements, steps, files, gate command, base count and the conditional base and mutation fields. If that plan is not available, do not guess its values from the code. Reconstruct a concrete plan with what is provable and ask for its approval by the existing rule before continuing Execute (workflow.md, Approval and authorizations). If the verification base cannot be recovered through the routes of (verify.md, Scope), keep the block for lack of a base. Do not create a state file or a persisted report.

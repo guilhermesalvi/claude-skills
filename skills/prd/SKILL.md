@@ -1,50 +1,50 @@
 ---
 name: prd
-description: 'Cria e refina PRDs de produto ou feature: problema, usuário, comportamento de negócio, requisitos com ID, métricas e trade-offs. Use para "PRD", "product requirements", "especificação de produto", "vamos documentar/especificar essa feature", inclusive PRD do que já existe e pedido enquadrado como tela ou CRUD; não para tech spec, design, tasks, ADR, notas de reunião, documentação geral ou spec de API sem contexto de produto.'
+description: 'Creates and refines product or feature PRDs: problem, user, business behavior, requirements with IDs, metrics and trade-offs. Use for "PRD", "product requirements", "product spec", "let''s document/specify this feature", including a PRD of what already exists and requests framed as a screen or CRUD; not for tech specs, design, tasks, ADRs, meeting notes, general documentation or an API spec without product context.'
 ---
 
 # PRD Writer
 
-Descreva o problema, o usuário afetado e o comportamento de negócio esperado. As decisões de implementação pertencem ao trabalho técnico posterior.
+Describe the problem, the affected user and the expected business behavior. Implementation decisions belong to the technical work that follows.
 
-## Quando é PRD
+## When it is a PRD
 
-É PRD a feature, o produto digital ou a iniciativa tecnológica com impacto funcional para um usuário: depois dela o usuário observa um resultado novo, um dado novo ou um prazo novo. Iniciativa técnica que produz um desses três ganha PRD focado no impacto, não na implementação.
+A PRD covers a feature, a digital product or a technology initiative with functional impact on a user: after it, the user observes a new result, a new piece of data or a new deadline. A technical initiative that produces one of those three gets a PRD focused on the impact, not on the implementation.
 
-| Não é PRD | Artefato certo |
+| Not a PRD | Right artifact |
 |---|---|
-| Dívida técnica, refactor, modernização sem impacto funcional novo | ADR, doc de dívida técnica, plano de refactor |
-| Decisão arquitetural | ADR |
-| Processo interno sem entrega de software | Runbook, doc de processo |
-| Contratos de API, módulos, plano de tarefas, design de componente | Tech spec, design doc |
+| Technical debt, refactor, modernization without new functional impact | ADR, technical debt doc, refactor plan |
+| Architectural decision | ADR |
+| Internal process without software delivery | Runbook, process doc |
+| API contracts, modules, task plan, component design | Tech spec, design doc |
 
-Dois enquadramentos têm tratamento próprio:
+Two framings get their own treatment:
 
-- Pedido que é PRD mas chega enquadrado como implementação, tela ou CRUD: reenquadre pelo problema (intake.md, Escopo problemático).
-- "PRD do que já existe" (reverse PRD) e plataforma, infra, SDK ou API como produto: siga modes.md; ele diz o que muda em cada um desses modos.
+- A request that is a PRD but arrives framed as implementation, screen or CRUD: reframe it by the problem (intake.md, Problematic scope).
+- "PRD of what already exists" (reverse PRD) and platform, infra, SDK or API as a product: follow modes.md; it says what changes in each of those modes.
 
-## Escolher a entrada
+## Choosing the entry point
 
-| Pedido | Entrada | Ler | Resultado desta entrada |
+| Request | Entry point | Read | Result of this entry point |
 |---|---|---|---|
-| Criar PRD; product requirements; especificar produto ou feature | Criação | [intake.md](references/intake.md); [writing.md](references/writing.md); [conventions.md](references/conventions.md); [workflow.md](references/workflow.md) | PRD e apresentação das pendências pertinentes |
-| Atualizar PRD | Edição | PRD atual; [IDs e regras afetadas](references/writing.md#ids); [Edição no lugar](references/conventions.md#edição-no-lugar); [workflow.md](references/workflow.md) | O mesmo arquivo revisado e checado |
-| Documentar o produto existente | Reverse PRD | Referências de criação e [Modo reverse PRD](references/modes.md#modo-reverse-prd) | Reverse PRD com intenção inferida marcada |
-| Plataforma, infra, SDK ou API como produto | Produto consumido por outro time ou sistema | Referências de criação e [modo correspondente](references/modes.md#modo-plataforma-infra-sdk-ou-api-como-produto) | PRD com consumidor e métricas adequados ao produto |
+| Create a PRD; product requirements; specify a product or feature | Creation | [intake.md](references/intake.md); [writing.md](references/writing.md); [conventions.md](references/conventions.md); [workflow.md](references/workflow.md) | PRD and presentation of the pertinent open items |
+| Update a PRD | Editing | Current PRD; [IDs and affected rules](references/writing.md#ids); [In-place editing](references/conventions.md#in-place-editing); [workflow.md](references/workflow.md) | The same file, revised and checked |
+| Document the existing product | Reverse PRD | Creation references and [Reverse PRD mode](references/modes.md#reverse-prd-mode) | Reverse PRD with inferred intent tagged |
+| Platform, infra, SDK or API as a product | Product consumed by another team or system | Creation references and the [corresponding mode](references/modes.md#platform-infra-sdk-or-api-as-a-product-mode) | PRD with consumer and metrics suited to the product |
 
-Redação: [Convenções de escrita](references/prose.md#convenções-de-escrita). Leia a política uma vez por versão do arquivo na sessão de escrita. Leia o exemplo por seção conforme a referência abaixo.
+Writing: [Writing conventions](references/prose.md#writing-conventions). Read the policy once per version of the file in the writing session. Read the example per section as the reference below describes.
 
-## Limites
+## Limits
 
-- **Aprovação é o commit.** Árvore suja é trabalho em elaboração; arquivo commitado é a versão válida.
-- **Precedência.** Para layout, seções, idioma e forma, vale primeiro o pedido da sessão, depois a convenção do repositório e por último os defaults desta skill. Achado de forma decorrente dos dois primeiros é mantido e relatado (workflow.md, Checar).
-- Tags, IDs e fonte única das regras são definidos em (writing.md, Tags), (writing.md, IDs) e (writing.md, Uma regra, um lugar).
-- Resultados de checagem, notas de confiança e marcas de validação ficam fora do PRD. Relate a verificação não executada e os achados remanescentes conforme (workflow.md, Checar); não declare aprovação sem evidência.
+- **Approval is the commit.** A dirty tree is work in progress; the committed file is the valid version.
+- **Precedence.** For layout, sections, language and form, the session request comes first, then the repository convention and last the defaults of this skill. A form finding that follows from the first two is kept and reported (workflow.md, Check).
+- Tags, IDs and the single source of rules are defined in (writing.md, Tags), (writing.md, IDs) and (writing.md, One rule, one place).
+- Check results, confidence notes and validation marks stay out of the PRD. Report verification that was not executed and remaining findings as (workflow.md, Check) says; do not declare approval without evidence.
 
-## Leitura por etapa
+## Reading per step
 
-Para uma entrada nova, leia suas referências e dependências normativas. Para uma correção localizada, leia o trecho afetado, os pré-requisitos, as exceções e os citadores; amplie a leitura quando surgir dependência. A distinção entre regeneração e ajuste localizado é definida em (workflow.md, Apresentar e iterar). Leitura seletiva não dispensa a validação e a revisão do artefato completo ou revisado (workflow.md, Revisão antes de apresentar).
+For a new entry point, read its references and normative dependencies. For a localized correction, read the affected passage, the prerequisites, the exceptions and the citing passages; widen the reading when a dependency appears. The distinction between regeneration and localized adjustment is defined in (workflow.md, Present and iterate). Selective reading does not waive the validation and review of the complete or revised artifact (workflow.md, Review before presenting).
 
-## Exemplo
+## Example
 
-PRD no formato-alvo em [references/example.md](references/example.md). Leia a seção correspondente na primeira vez, nesta sessão, em que escrever uma seção da tabela (writing.md, Seções); não é template a copiar. Exemplos adicionais são lidos somente para a seção produzida ou para esclarecer um defeito editorial observado.
+A PRD in the target format is in [references/example.md](references/example.md). Read the corresponding section the first time, in this session, you write a section from the table (writing.md, Sections); it is not a template to copy. Additional examples are read only for the section being produced or to clarify an observed editorial defect.

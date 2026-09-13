@@ -1,91 +1,91 @@
 # ADR
 
-**Objetivo:** registrar uma decisão de projeto com o contexto, as alternativas consideradas e as consequências, para que o porquê sobreviva ao código, ao diagrama e ao turnover.
+**Goal:** record a project-wide decision with the context, the alternatives considered and the consequences, so that the why survives the code, the diagram and turnover.
 
-## Quando a decisão é de projeto
+## When a decision is project-wide
 
-Uma decisão é **de projeto** quando fixa convenção, restrição ou padrão que features futuras devem seguir. Exemplos:
+A decision is **project-wide** when it fixes a convention, constraint or pattern that future features must follow. Examples:
 
-- estilo arquitetural;
-- transporte de eventos;
-- forma de persistência compartilhada;
-- política de versionamento.
+- architectural style;
+- event transport;
+- form of shared persistence;
+- versioning policy.
 
-Decisão local à feature não vira ADR; quem fixa o destino dela é o design (design.md, Technical Decisions).
+A decision local to the feature does not become an ADR; its destination is fixed by the design (design.md, Technical Decisions).
 
-Gatilhos explícitos do usuário que pedem uma ADR: "registre essa decisão", "isso é decisão de projeto", "daqui em diante sempre…".
+Explicit user triggers that ask for an ADR: "record this decision", "this is a project decision", "from now on always…".
 
-## O que a ADR guarda
+## What the ADR keeps
 
-- **O porquê.** A ADR guarda o que código e diagrama não guardam: a razão da decisão.
-- **Alternativas consideradas e consequências.** Sem elas, a IA re-propõe caminhos já descartados e o time re-litiga o que já foi pago.
-- **Participantes.** Decisão de arquitetura raramente é de uma pessoa; o nome de quem decidiu e de quem foi consultado é o que responde "por que fizemos assim?" depois do turnover. É conteúdo da decisão, não campo de autoria do arquivo (specify.md, Versionamento).
+- **The why.** The ADR keeps what code and diagrams do not: the reason for the decision.
+- **Alternatives considered and consequences.** Without them, the AI re-proposes paths already discarded and the team relitigates what was already paid for.
+- **Participants.** An architecture decision is rarely one person's; the names of who decided and who was consulted are what answers "why did we do it this way?" after turnover. It is content of the decision, not an authorship field of the file (specify.md, Versioning).
 
-### Forma de escrita
+### Writing form
 
-No Contexto, indique o problema e as restrições. Na Decisão, declare a escolha em ordem direta. Nas alternativas, explique por que cada opção realmente avaliada foi descartada usando os critérios da decisão. Nas consequências, descreva benefícios e custos concretos. Preserve participantes, referências de substituição e paths das regras derivadas. Não acrescente alternativa fictícia nem custo genérico para completar o formato.
+In Context, state the problem and the constraints. In Decision, state the choice in direct order. In the alternatives, explain why each option actually evaluated was discarded using the criteria of the decision. In the consequences, describe concrete benefits and costs. Preserve participants, supersession references and paths of the derived rules. Do not add a fictional alternative or a generic cost to complete the format.
 
-## Arquivo
+## File
 
-Grave em `docs/adr/NNNN-<slug>.md`. Obtenha `NNNN` listando `docs/adr` e somando 1 ao maior número (validation.md, Numeração).
+Save in `docs/adr/NNNN-<slug>.md`. Get `NNNN` by listing `docs/adr` and adding 1 to the highest number (validation.md, Numbering).
 
-Projeto que já tem formato ou diretório de ADR mantém o seu; esta entrada não cria formato paralelo. O formato do projeto é convenção quando aparece em pelo menos três ADRs commitadas ou está escrito no guia do repositório (validation.md, Forma mantida por pedido ou convenção). Os achados de forma que decorrem dela se mantêm e são relatados.
+A project that already has an ADR format or directory keeps its own; this entry point does not create a parallel format. The project format is a convention when it appears in at least three committed ADRs or is written in the repository guide (validation.md, Form kept by request or convention). Form findings that follow from it are kept and reported.
 
-Para reconhecer uma convenção por exemplos, use a versão dos arquivos presente em HEAD. Liste os arquivos com `git ls-tree -r --name-only HEAD -- docs/adr` (ou o diretório efetivamente convencionado) e filtre os Markdown que são ADRs. Leia cada exemplo com `git show "HEAD:<caminho>"`. A convenção precisa aparecer em pelo menos três desses exemplos. Um arquivo apenas staged ou untracked não conta. Uma alteração local em arquivo já commitado também não altera a convenção de HEAD. Se HEAD não existir, não há convenção comprovada por exemplos; a convenção escrita no guia do repositório continua sendo uma fonte válida.
+To recognize a convention by examples, use the version of the files present in HEAD. List the files with `git ls-tree -r --name-only HEAD -- docs/adr` (or the directory actually established by convention) and filter the Markdown files that are ADRs. Read each example with `git show "HEAD:<path>"`. The convention must appear in at least three of those examples. A file that is only staged or untracked does not count. A local change to an already committed file also does not change the HEAD convention. If HEAD does not exist, there is no convention proven by examples; the convention written in the repository guide is still a valid source.
 
-Com uma ou duas ADRs em formato próprio e sem convenção escrita, pergunte qual formato vale antes de gravar; sem resposta, grave no formato desta entrada. Pedido da sessão que nomeia literalmente a seção, o campo ou a forma isenta do mesmo modo, sem contagem (validation.md, Forma mantida por pedido ou convenção).
+With one or two ADRs in their own format and no written convention, ask which format applies before saving; without an answer, save in the format of this entry point. A session request that literally names the section, the field or the form exempts in the same way, without counting (validation.md, Form kept by request or convention).
 
-Template completo com campos substituíveis: preencha-os com a decisão real. Participantes, alternativas e custos desconhecidos não devem ser inventados; um campo instrucional deste template não é um placeholder permitido no artefato entregue.
+Complete template with replaceable fields: fill them with the real decision. Unknown participants, alternatives and costs must not be invented; an instructional field of this template is not a permitted placeholder in the delivered artifact.
 
 ### Template
 
 ```markdown
-# ADR 0007: Eventos de domínio saem por outbox transacional
+# ADR 0007: Domain events leave through a transactional outbox
 
-Participants: [quem decidiu]; [quem foi consultado].
+Participants: [who decided]; [who was consulted].
 
 ## Context
-[Situação e restrições que forçaram a decisão; o que estava em jogo.]
+[Situation and constraints that forced the decision; what was at stake.]
 
 ## Decision
-[Uma frase: o que faremos.]
+[One sentence: what we will do.]
 
 ## Alternatives considered
-| Alternativa | Por que rejeitada |
+| Alternative | Why rejected |
 |---|---|
-| [alternativa avaliada] | [o que a derrubou, contra os mesmos critérios] |
+| [evaluated alternative] | [what brought it down, against the same criteria] |
 
 ## Consequences
-- Positive: [o que a decisão compra]
-- Negative: [o custo aceito; ADR sem consequência negativa é decisão não examinada]
+- Positive: [what the decision buys]
+- Negative: [the accepted cost; an ADR without a negative consequence is an unexamined decision]
 
 ## Derived rules
-- [regra que existe por causa desta ADR] — `CLAUDE.md`
+- [rule that exists because of this ADR] — `CLAUDE.md`
 ```
 
-As seções da ADR são as do template, e a lista é fechada: a checagem de forma acusa a seção `##` fora dela (validation.md, Checagem de forma). Os headings são fixos em inglês seja qual for o idioma da prosa (workflow.md, Idioma).
+The ADR sections are those of the template, and the list is closed: the form check flags a `##` section outside it (validation.md, Form check). The headings are fixed in English whatever the language of the prose (workflow.md, Language).
 
-## Antes de apresentar
+## Before presenting
 
-Faça a checagem de forma (validation.md, Checagem de forma); depois percorra a lista fechada da entrada ADR (validation.md, Revisão por entrada) e apresente.
+Do the form check (validation.md, Form check); then go through the closed list of the ADR entry point (validation.md, Review per entry point) and present.
 
-## Conformar e superseder
+## Conform and supersede
 
-- **Ler antes de projetar.** Todo Design lê as ADRs ativas antes de projetar; decisão ativa é restrição. Quando o melhor para a feature conflita com uma ADR ativa, a saída é conformar ou superseder, nunca ignorar.
-- **Como superseder.** Crie uma ADR nova com a linha `Supersedes: NNNN` abaixo do título. Na ADR antiga, adicione `Superseded by: NNNN` no mesmo lugar (abaixo do título) e não altere mais nada nela. Nunca apague uma ADR.
-- **Regra derivada cita a ADR.** Regra de projeto que a mudança cria ou altera (em CLAUDE.md ou .claude/rules) cita a ADR ou o princípio que a justifica. Regra sem porquê é seguida cegamente ou ignorada.
-- **Regra derivada tem path.** Cada regra da seção `## Derived rules` é um bullet e traz, entre crases, o path do arquivo onde a regra vive — `CLAUDE.md`, `.claude/rules/tracing.md`. Regra sem path não é localizável e não é seguida; a checagem de forma acusa a seção sem bullet e o bullet sem path. A seção existe só quando a decisão cria ou altera regra.
+- **Read before designing.** Every Design reads the active ADRs before designing; an active decision is a constraint. When the best for the feature conflicts with an active ADR, the way out is to conform or supersede, never to ignore.
+- **How to supersede.** Create a new ADR with the line `Supersedes: NNNN` below the title. In the old ADR, add `Superseded by: NNNN` in the same place (below the title) and change nothing else in it. Never delete an ADR.
+- **A derived rule cites the ADR.** A project rule the change creates or alters (in CLAUDE.md or .claude/rules) cites the ADR or the principle that justifies it. A rule without a why is followed blindly or ignored.
+- **A derived rule has a path.** Each rule in the `## Derived rules` section is a bullet and carries, in backticks, the path of the file where the rule lives — `CLAUDE.md`, `.claude/rules/tracing.md`. A rule without a path is not locatable and is not followed; the form check flags the section without a bullet and the bullet without a path. The section exists only when the decision creates or alters a rule.
 
-### Exemplo didático parcial de reescrita
+### Partial didactic rewrite example
 
-Fragmento de escrita; não é um artefato completo nem evidência de uma execução real.
+A writing fragment; not a complete artifact nor evidence of a real execution.
 
 ```text
-Antes: Foi tomada a decisão de que a publicação dos eventos de domínio
-será realizada por meio de outbox transacional.
+Before: A decision was taken to the effect that the publication of domain
+events will be carried out by means of a transactional outbox.
 
-Depois: Os eventos de domínio serão publicados por outbox transacional.
+After: Domain events will be published through a transactional outbox.
 
-Preservado: a escolha demonstrada no título do template existente.
-O par não afirma que essa ADR foi adotada pelo projeto.
+Preserved: the choice shown in the title of the existing template.
+The pair does not claim that this ADR was adopted by the project.
 ```

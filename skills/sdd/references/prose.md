@@ -1,33 +1,33 @@
-# Escrita dos artefatos SDD
+# Writing the SDD artifacts
 
-## Convenções de escrita
+## Writing conventions
 
-Comece pelo comportamento, decisão, entregável ou resultado que o leitor precisa compreender. Acrescente a justificativa e a evidência pertinentes. Evite introduções que apenas anunciem o assunto e conclusões que repitam o parágrafo anterior.
+Start with the behavior, decision, deliverable or result the reader needs to understand. Add the pertinent justification and evidence. Avoid introductions that only announce the subject and conclusions that repeat the previous paragraph.
 
-Desenvolva uma ideia por parágrafo. Agrupe as frases que explicam a mesma decisão e separe decisões independentes. Preserve o contexto necessário para entender uma restrição, um custo ou um risco.
+Develop one idea per paragraph. Group the sentences that explain the same decision and separate independent decisions. Preserve the context needed to understand a constraint, a cost or a risk.
 
-Identifique a ação e seu responsável quando conhecidos. Use termos do projeto e resultados definidos nas fontes. Um adjetivo como “robusto” não substitui um mecanismo, uma condição de falha ou um critério de teste. Informação ausente segue as regras de premissas e lacunas; a edição não pode inventar comportamento.
+Identify the action and its responsible party when known. Use project terms and results defined in the sources. An adjective like "robust" does not replace a mechanism, a failure condition or a test criterion. Missing information follows the rules for assumptions and gaps; editing cannot invent behavior.
 
-Mantenha nomes de APIs, tipos, erros, eventos, paths e IDs exatamente como nas fontes. Preserve keywords EARS, modalidade, negações, comparadores, unidades, prazos e exceções. Simplificar a frase não autoriza mudar o contrato.
+Keep names of APIs, types, errors, events, paths and IDs exactly as in the sources. Preserve EARS keywords, modality, negations, comparators, units, deadlines and exceptions. Simplifying the sentence does not authorize changing the contract.
 
-Use prosa para contexto e justificativas, listas para requisitos e passos, e tabelas para decisões comparáveis, interfaces e evidências. Mantenha os campos e headings exigidos pelo artefato. Formatação adicional só é útil quando ajuda a distinguir informações diferentes.
+Use prose for context and justifications, lists for requirements and steps, and tables for comparable decisions, interfaces and evidence. Keep the fields and headings the artifact requires. Additional formatting is only useful when it helps distinguish different information.
 
-Evite frases prontas, rótulos inventados e contraposições sem alternativa real. Limites de autorização, segurança e escopo continuam explícitos. Remova o excesso retórico sem apagar a restrição.
+Avoid stock phrases, invented labels and counterpoints without a real alternative. Authorization, security and scope limits remain explicit. Remove rhetorical excess without erasing the constraint.
 
-## Texto de instruções
+## Instruction text
 
-Declare a condição, a ação e a saída quando o procedimento depender de uma decisão. Coloque a exceção junto da regra ou cite seu arquivo e heading. Use passos para sequências e tabelas para alternativas de execução. Não imponha esse formato a toda explicação.
+State the condition, the action and the output when the procedure depends on a decision. Put the exception next to the rule or cite its file and heading. Use steps for sequences and tables for execution alternatives. Do not impose that format on every explanation.
 
-Referências vagas devem ser substituídas pelo objeto concreto. A task define as interfaces de que precisa; a spec e o design continuam sendo fontes do comportamento e das decisões. Referencie a seção necessária, sem mandar ler documentos não relacionados à entrada.
+Vague references must be replaced by the concrete object. The task defines the interfaces it needs; the spec and the design remain the sources of behavior and decisions. Reference the needed section, without sending the reader to documents unrelated to the entry point.
 
-## Texto do artefato
+## Artifact text
 
-Aplique a forma própria de cada entrada: `specify.md`, `design.md`, `tasks.md` e `adr.md`. Para comunicações de execução e evidência, use execute.md e verify.md. Idioma, aprovações e pré-requisitos seguem workflow.md. A validação segue validation.md.
+Apply the form of each entry point: `specify.md`, `design.md`, `tasks.md` and `adr.md`. For execution and evidence communications, use execute.md and verify.md. Language, approvals and prerequisites follow workflow.md. Validation follows validation.md.
 
-As convenções editoriais não substituem campos, requisitos EARS, rastreabilidade ou evidência. Exemplos ilustram a escrita; seus dados e resultados não se tornam fatos de uma mudança real.
+The editorial conventions do not replace fields, EARS requirements, traceability or evidence. Examples illustrate writing; their data and results do not become facts of a real change.
 
-## Checklist editorial
+## Editorial checklist
 
-Na revisão já prevista, confira: ponto principal identificável; unidade do parágrafo; ação e responsável claros; resultado verificável quando exigido; vocabulário e modalidade preservados; incerteza visível; referência resolvível; formatação funcional; ausência de repetição sem valor.
+In the review already planned, check: main point identifiable; paragraph unity; action and responsible party clear; verifiable result when required; vocabulary and modality preserved; uncertainty visible; reference resolvable; functional formatting; no repetition without value.
 
-Não criar nota, seção ou rodada exclusiva para esta lista. Se a revisão revelar uma decisão de comportamento pendente, seguir o retorno ao artefato de origem definido no workflow. O texto não pode resolver essa decisão por conta própria.
+Do not create a score, section or round exclusive to this list. If the review reveals a pending behavior decision, follow the return to the source artifact defined in the workflow. The text cannot resolve that decision on its own.

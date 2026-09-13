@@ -1,22 +1,22 @@
-# Modos condicionais
+# Conditional modes
 
-Este arquivo é carregado só quando o pedido dispara um dos dois modos abaixo. As regras gerais de intake.md e de writing.md continuam valendo nos dois modos; aqui está só o que muda em relação a elas.
+This file is loaded only when the request triggers one of the two modes below. The general rules of intake.md and writing.md still apply in both modes; only what changes relative to them is here.
 
-## Modo reverse PRD
+## Reverse PRD mode
 
-Use este modo quando o pedido for documentar o que já foi construído: "PRD do módulo X", "documente o que construímos". Como o material inclui código e telas, aplique o capability test a todas as seções do PRD (writing.md, Capability test). Neste modo, e só nele, a contagem de termos de mecanismo da revisão cobre toda seção do PRD (workflow.md, Revisão antes de apresentar).
+Use this mode when the request is to document what has already been built: "PRD of module X", "document what we built". Because the material includes code and screens, apply the capability test to every section of the PRD (writing.md, Capability test). In this mode, and only in it, the review's count of mechanism terms covers every section of the PRD (workflow.md, Review before presenting).
 
-- **O que pedir.** Peça comportamento observável, regras aplicadas e decisões que o sistema toma. Aceite o material em qualquer forma: código, docs, bullets, descrição livre.
-- **De onde derivar a intenção.** Derive a intenção a partir dos resultados, isto é, do que o usuário ou o negócio ganha, e não das operações que o sistema executa.
-- **Intenção inferida.** Toda intenção inferida é `[ASSUMPTION]`: intenção que não está escrita no material recebido (código comentado, doc, ticket, commit) leva a tag, porque intenção engenheirada em reverso é frágil.
-- **Comportamento sem justificativa.** Comportamento sem justificativa de negócio identificável é `[GAP]`. A tag expõe a feature órfã, que pode ser peso morto ou valor escondido.
-- **Intenções concorrentes.** Quando há múltiplas intenções plausíveis para o mesmo comportamento, elas vão para Open Questions (writing.md, Seções). Não fabrique coerência que não existe.
+- **What to ask for.** Ask for observable behavior, applied rules and decisions the system makes. Accept the material in any form: code, docs, bullets, free description.
+- **Where to derive intent from.** Derive intent from outcomes, that is, from what the user or the business gains, not from the operations the system performs.
+- **Inferred intent.** Every inferred intent is `[ASSUMPTION]`: intent that is not written in the received material (commented code, doc, ticket, commit) gets the tag, because reverse-engineered intent is fragile.
+- **Behavior without justification.** Behavior without an identifiable business justification is `[GAP]`. The tag exposes the orphan feature, which may be dead weight or hidden value.
+- **Competing intents.** When there are multiple plausible intents for the same behavior, they go to Open Questions (writing.md, Sections). Do not fabricate coherence that does not exist.
 
-## Modo plataforma, infra, SDK ou API como produto
+## Platform, infra, SDK or API as a product mode
 
-Dispara quando o produto do PRD é uma plataforma, infra, SDK ou API, isto é, algo consumido por outro time ou sistema.
+Triggers when the product of the PRD is a platform, infra, SDK or API, that is, something consumed by another team or system.
 
-- **Usuário-alvo.** O usuário é o time ou o sistema consumidor. JTBD continua funcionando para ele; exemplo: "integrar auth sem gerenciar estado de sessão".
-- **Métricas.** As métricas primárias são operacionais: percentis de latência, taxa de erro, adoção por consumidores, time-to-integration. Resultado de negócio é de segunda ordem, porque pertence aos consumidores.
-- **Acceptance Criteria.** Incluem o contrato: estabilidade da forma da API, SLA, janela de backward compatibility.
-- **Deprecação.** Quando o PRD substitui interface já publicada, deprecação entra em Declared Trade-offs quando alguma interface antiga deixa de ser coberta (há custo), dizendo qual interface e o que não será migrado; e em Non-goals quando nada publicado deixa de funcionar, dizendo o que não será migrado (writing.md, Seções). Nos dois casos, a entrada diz que o cronograma não está comprometido.
+- **Target user.** The user is the consuming team or system. JTBD still works for it; example: "integrate auth without managing session state".
+- **Metrics.** The primary metrics are operational: latency percentiles, error rate, adoption by consumers, time-to-integration. Business outcome is second order, because it belongs to the consumers.
+- **Acceptance Criteria.** Include the contract: stability of the API shape, SLA, backward compatibility window.
+- **Deprecation.** When the PRD replaces an already published interface, deprecation goes into Declared Trade-offs when some old interface stops being covered (there is a cost), saying which interface and what will not be migrated; and into Non-goals when nothing published stops working, saying what will not be migrated (writing.md, Sections). In both cases, the entry says the schedule is not committed.

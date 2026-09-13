@@ -1,63 +1,63 @@
-# Avaliação do input e pesquisa
+# Input assessment and research
 
-No passo Entender (workflow.md, Workflow), avalie o escopo, extraia os sinais do material recebido e decida se precisa pesquisar. Use as tags definidas em (writing.md, Tags). Para documentar um produto existente ou uma plataforma, infra, SDK ou API como produto, aplique também o modo pertinente de modes.md.
+In the Understand step (workflow.md, Workflow), assess the scope, extract the signals from the received material and decide whether research is needed. Use the tags defined in (writing.md, Tags). To document an existing product or a platform, infra, SDK or API as a product, also apply the pertinent mode from modes.md.
 
-## Coleta de perguntas
+## Collecting questions
 
-1. Extraia dos materiais as respostas já disponíveis; não repita perguntas respondidas.
-2. Aplique as condições de escopo, classificação de PRD antigo, contexto originário (writing.md, Lente DDD) e riqueza do contexto.
-3. Reúna as perguntas de pré-geração ainda necessárias em uma única mensagem: há uma rodada antes de gerar.
-4. No caso Sem sinais, use no máximo as três perguntas definidas em Riqueza do contexto. Esse teto não é global para os outros enquadramentos.
-5. Depois da resposta, reclassifique uma vez e gere, sem segunda rodada.
-6. Se o usuário recusar discovery, gere com as lacunas previstas em Casos de borda, sem nova rodada.
+1. Extract from the materials the answers already available; do not repeat answered questions.
+2. Apply the conditions of scope, classification of an old PRD, originating context (writing.md, DDD lens) and context richness.
+3. Gather the pre-generation questions still needed in a single message: there is one round before generating.
+4. In the No signals case, use at most the three questions defined in Context richness. That ceiling is not global for the other framings.
+5. After the answer, reclassify once and generate, without a second round.
+6. If the user declines discovery, generate with the gaps planned in Edge cases, without a new round.
 
-Perguntas ao apresentar o PRD pronto (workflow.md, Apresentar e iterar) ficam fora da rodada de pré-geração.
+Questions asked when presenting the finished PRD (workflow.md, Present and iterate) stay out of the pre-generation round.
 
-## Escopo problemático
+## Problematic scope
 
-Antes de gerar, verifique se o escopo do pedido comporta um PRD. Três sintomas pedem intervenção antes de qualquer geração:
+Before generating, check whether the scope of the request fits a PRD. Three symptoms call for intervention before any generation:
 
-| Sintoma | Ação |
+| Symptom | Action |
 |---|---|
-| Muito amplo: domínio inteiro ou duas ou mais iniciativas sem corte (ex.: "plataforma de crédito") | Não gere antes do corte: proponha um corte e peça validação; se o usuário não souber ou recusar escolher, gere para o corte proposto, marcado `[ASSUMPTION]` |
-| Enquadrado como implementação (ex.: "PRD para o microserviço X", "PRD para a tela Y") | Redirecione: o PRD começa do problema, não da implementação |
-| CRUD ou entidade-cêntrico (ex.: "CRUD para X", "tela de cadastro para Y") | Redirecione com duas perguntas: que capability ou JTBD isso serve? Que decisão de negócio acontece ali? Problemas são vividos por pessoas, não por tabelas precisando de telas |
+| Too broad: an entire domain or two or more initiatives without a cut (e.g. "credit platform") | Do not generate before the cut: propose a cut and ask for validation; if the user does not know or declines to choose, generate for the proposed cut, tagged `[ASSUMPTION]` |
+| Framed as implementation (e.g. "PRD for microservice X", "PRD for screen Y") | Redirect: the PRD starts from the problem, not from the implementation |
+| CRUD or entity-centric (e.g. "CRUD for X", "registration screen for Y") | Redirect with two questions: which capability or JTBD does this serve? Which business decision happens there? Problems are experienced by people, not by tables needing screens |
 
-Em qualquer um dos três casos, se o material ainda não responder, inclua na rodada única a pergunta de base: que problema de usuário ou de negócio essa implementação resolve?
+In any of the three cases, if the material still does not answer, include in the single round the base question: which user or business problem does this implementation solve?
 
-## Material de discovery
+## Discovery material
 
-Documentos recebidos como input (PDF, docx, decks, atas, briefs e PRDs antigos) são ricos em sinais, mas não são fonte autoritativa. Trate-os assim:
+Documents received as input (PDF, docx, decks, minutes, briefs and old PRDs) are rich in signals but are not an authoritative source. Treat them like this:
 
-- **Extraia antes de perguntar.** Levante do material os sinais que o PRD precisa (problema, evidência, usuário-alvo, direção, métricas, restrições) antes de fazer qualquer pergunta ao usuário.
-- **Inferência do discovery é `[ASSUMPTION]`.** O que você deduz do documento entra como `[ASSUMPTION]` derivada dele, com a origem entre parênteses ao fim da frase: nome do documento e página ou seção. Texto sem tag é fato, na definição de writing.md, Tags.
-- **Sintetize o material.** Preserve e reorganize a informação relevante. A busca das três frases mais longas do PRD no material identifica possível cópia literal; sua ausência não demonstra boa síntese. Com material em texto no disco, selecione as três frases de prosa mais longas do PRD (12 ou mais palavras, fora de tabela, heading e bloco de código) e busque cada uma no material com `grep -i -F`; frase encontrada é reformatação e se reescreve (workflow.md, Checar). Para material sem busca textual, leia o trecho correspondente. A revisão de conteúdo verifica a síntese.
-- **PRD antigo pede classificação.** Diante de um PRD antigo, determine qual é o caso: (a) ele serve de reverse PRD para um incremento, (b) ele é o documento a atualizar no lugar, ou (c) ele é só inspiração. O pedido decide: "incremento" ou feature nova sobre ele é (a), "atualize" ou "corrija" é (b), "como referência" ou "parecido com" é (c); pedido sem nenhum desses sinais pede a pergunta antes de gerar.
-- **Fontes conflitantes viram `[GAP]`.** Quando duas fontes se contradizem, registre a `[GAP]` com pedido de reconciliação. Não escolha um lado em silêncio.
+- **Extract before asking.** Lift from the material the signals the PRD needs (problem, evidence, target user, direction, metrics, constraints) before asking the user anything.
+- **Inference from discovery is `[ASSUMPTION]`.** What you deduce from the document enters as an `[ASSUMPTION]` derived from it, with the origin in parentheses at the end of the sentence: document name and page or section. Untagged text is fact, by the definition in writing.md, Tags.
+- **Synthesize the material.** Preserve and reorganize the relevant information. Searching the material for the three longest sentences of the PRD identifies possible literal copying; its absence does not demonstrate good synthesis. With text material on disk, select the three longest prose sentences of the PRD (12 or more words, outside tables, headings and code blocks) and search for each in the material with `grep -i -F`; a sentence found is reformatting and gets rewritten (workflow.md, Check). For material without text search, read the corresponding passage. The content review verifies the synthesis.
+- **An old PRD asks for classification.** Faced with an old PRD, determine which case it is: (a) it serves as a reverse PRD for an increment, (b) it is the document to update in place, or (c) it is only inspiration. The request decides: "increment" or a new feature on top of it is (a), "update" or "fix" is (b), "as a reference" or "similar to" is (c); a request with none of those signals asks the question before generating.
+- **Conflicting sources become `[GAP]`.** When two sources contradict each other, record the `[GAP]` with a reconciliation request. Do not pick a side silently.
 
-## Riqueza do contexto
+## Context richness
 
-Conte quais dos seis sinais (problema, evidência, usuário-alvo, direção, métricas, restrições) o contexto recebido traz, classifique-o em um dos três níveis e siga a ação correspondente:
+Count which of the six signals (problem, evidence, target user, direction, metrics, constraints) the received context brings, classify it into one of the three levels and follow the corresponding action:
 
-| Nível | Definição | Ação |
+| Level | Definition | Action |
 |---|---|---|
-| Suficiente para redigir | Usuário-alvo identificado + (problema ou direção de solução) | Gere o PRD e refine com o usuário |
-| Parcial | Pelo menos um sinal presente, sem o par que define Suficiente para redigir | Gere com `[ASSUMPTION]` e `[GAP]`; não force discovery |
-| Sem sinais | Nenhum sinal: só nome de feature, palavra única ou ideia genérica | Faça no máximo 3 perguntas, todas de uma vez, em uma única rodada: que problema real resolve? quem é o usuário-alvo? como saberemos que funcionou? Com as respostas, reclassifique uma vez e gere, sem segunda rodada |
+| Enough to write | Target user identified + (problem or solution direction) | Generate the PRD and refine with the user |
+| Partial | At least one signal present, without the pair that defines Enough to write | Generate with `[ASSUMPTION]` and `[GAP]`; do not force discovery |
+| No signals | No signal: just a feature name, a single word or a generic idea | Ask at most 3 questions, all at once, in a single round: which real problem does it solve? who is the target user? how will we know it worked? With the answers, reclassify once and generate, without a second round |
 
-“Suficiente para redigir” não significa descoberta completa: os sinais ausentes continuam sendo tratados como premissas ou lacunas.
+"Enough to write" does not mean complete discovery: the missing signals are still treated as assumptions or gaps.
 
-### Casos de borda
+### Edge cases
 
-- **Solução sem usuário-alvo é contexto parcial.** "Problema + solução" sem usuário-alvo identificado é solution-first desancorado. Trate como Parcial: gere com `[GAP]` no usuário-alvo e, ao apresentar, a primeira pergunta é quem é o usuário-alvo.
-- **Recusa de discovery não bloqueia a geração.** Quando o usuário recusa as perguntas ("só escreve"), gere marcando `[GAP]` em cada um dos seis sinais que faltam e siga. Ao fim, liste o que precisa ser preenchido antes de qualquer próximo passo. A recusa cobre toda pergunta desta skill: contexto originário não nomeado segue a Lente DDD (writing.md, Lente DDD), e escopo muito amplo segue a linha correspondente de Escopo problemático.
+- **A solution without a target user is partial context.** "Problem + solution" without an identified target user is unanchored solution-first. Treat it as Partial: generate with `[GAP]` on the target user and, when presenting, the first question is who the target user is.
+- **Declining discovery does not block generation.** When the user declines the questions ("just write it"), generate tagging `[GAP]` on each of the six missing signals and move on. At the end, list what needs to be filled in before any next step. The refusal covers every question of this skill: an unnamed originating context follows the DDD lens (writing.md, DDD lens), and a too-broad scope follows the corresponding row of Problematic scope.
 
-## Pesquisa
+## Research
 
-Faça busca web quando o PRD vai citar benchmark, concorrente, comportamento de usuário, tendência, padrão técnico ou norma que não está no material recebido. Cite cada fonte em uma linha: link, trecho relevante e data de leitura.
+Do a web search when the PRD will cite a benchmark, competitor, user behavior, trend, technical pattern or regulation that is not in the received material. Cite each source on one line: link, relevant excerpt and reading date.
 
-Sem ferramenta de busca na sessão, o dado não se escreve de memória: marque `[GAP]` no trecho que dependia dele, diga no chat qual busca ficou pendente e siga. A falta de busca não bloqueia a geração, nem abre rodada de perguntas.
+Without a search tool in the session, the datum is not written from memory: tag `[GAP]` on the passage that depended on it, say in the chat which search is pending and move on. The lack of search does not block generation, nor does it open a round of questions.
 
-### Regulação
+### Regulation
 
-Em domínio regulado (financeiro, saúde, dados pessoais, pagamentos, segurança, KYC/AML, telecom, energia, ou outro sob autoridade setorial), a seção Regulatory Considerations entra só quando a norma foi identificada e lida; a forma da seção, inclusive a tag do artigo não conferido, está em writing.md (writing.md, Seções). Verifique por busca qual é a norma vigente antes de incluí-la; hipótese regulatória nunca é vinculante.
+In a regulated domain (finance, health, personal data, payments, security, KYC/AML, telecom, energy, or another under a sector authority), the Regulatory Considerations section enters only when the regulation was identified and read; the form of the section, including the tag for an unchecked article, is in writing.md (writing.md, Sections). Verify by search which regulation is in force before including it; a regulatory hypothesis is never binding.

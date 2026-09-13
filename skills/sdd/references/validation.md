@@ -1,145 +1,145 @@
-# Validação da SDD
+# SDD validation
 
-## Checagem de forma
+## Form check
 
-Antes de apresentar um artefato, leia o arquivo gravado e confira cada item da lista do seu tipo. Corrija todo achado e releia o arquivo inteiro; são no máximo duas rodadas de correção. Se a segunda ainda terminar com achado, apresente o artefato e liste no chat cada achado remanescente com o motivo, sem declarar validação completa. Achado de forma exigido pelo pedido ou comprovado pela convenção fica como está, é relatado no chat com a origem, usando "mantido por pedido" ou "mantido por convenção" (Forma mantida por pedido ou convenção), e não conta como rodada. Depois da checagem, faça a revisão de conteúdo (Revisão por entrada).
+Before presenting an artifact, read the saved file and check each item of the list for its type. Fix every finding and reread the whole file; there are at most two correction rounds. If the second still ends with a finding, present the artifact and list in the chat each remaining finding with the reason, without declaring complete validation. A form finding required by the request or proven by convention stays as it is, is reported in the chat with the origin, using "kept by request" or "kept by convention" (Form kept by request or convention), and does not count as a round. After the check, do the content review (Review per entry point).
 
-Artefato apresentado com achado remanescente listado não está aprovado nem abre a próxima entrada sem os pré-requisitos (workflow.md, Aprovação e autorizações). O gate do Execute tem protocolo próprio: execução inicial e até duas tentativas de correção, total de três execuções antes de parar (execute.md, Ciclo por task).
+An artifact presented with a listed remaining finding is not approved and does not open the next entry point without the prerequisites (workflow.md, Approval and authorizations). The Execute gate has its own protocol: an initial run and up to two correction attempts, three runs in total before stopping (execute.md, Per-task cycle).
 
-### Numeração
+### Numbering
 
-Antes de criar a pasta de uma mudança ou uma ADR, liste os filhos diretos da pasta, tome o maior `NNNN` e some 1; pasta sem item começa em 0001. O slug é kebab-case ASCII minúsculo. Antes de apresentar qualquer artefato numerado, confira que nenhum número se repete na pasta; a duplicata nasce quando dois branches alocam o mesmo número. Renumere o item cujo branch entra depois: mova-o para o próximo número livre, atualize quem o cita e confira de novo.
+Before creating the folder of a change or an ADR, list the direct children of the folder, take the highest `NNNN` and add 1; a folder without items starts at 0001. The slug is lowercase ASCII kebab-case. Before presenting any numbered artifact, check that no number repeats in the folder; the duplicate is born when two branches allocate the same number. Renumber the item whose branch lands later: move it to the next free number, update whoever cites it and check again.
 
 ### Spec
 
-- Comentário de máquina na primeira linha não vazia, na forma `<!-- sdd: spec | capability: <domínio>/<capability> [| prd: <path> | prd-rev: git:<hash>] -->` (specify.md, Comentário de máquina).
-- Linha de prefixo logo abaixo do título, na forma `Requirement prefix: \`RSV\`.`.
-- `## Context` e `## Requirements` presentes, sem seção duplicada; toda `##` na lista de Seções (specify.md, Seções), com a seção herdada do PRD como única tolerância.
-- Todo requisito com um `SHALL` por linha, num padrão EARS (WHEN, WHILE, WHERE, IF ou `The <system> SHALL`), na forma `- **PFX-NN** — texto`, sem termo vago.
-- Prefixo dos IDs igual ao declarado; ID único; ID aposentado (linha `Retired:`) não reutilizado; número pulado só quando consta dos aposentados.
-- Prefixo distinto de todo prefixo declarado em PRD e sem as duas primeiras letras em comum com algum deles.
-- Com `prd:`: o PRD existe; `prd-rev` igual a `git hash-object <prd>`; toda citação `X-nn` ou `X-NFR-nn` resolve para uma definição no PRD; `## Traceability` presente, com todo FR em escopo e todo cenário da tabela de Acceptance Criteria que cita FR em escopo, e só IDs EARS que existem na spec; linha só com IDs de PRD que nenhum requisito cita começa com `Design criterion:`.
-- Contexto com 3 a 5 linhas; Requisitos com subtítulos `###` a partir de 8 requisitos e sem eles abaixo disso.
-- Tags só `[ASSUMPTION]` e `[GAP]`; nenhum placeholder, hedging ou meta-narração; todo link Markdown local resolve.
+- Machine comment on the first non-empty line, in the form `<!-- sdd: spec | capability: <domain>/<capability> [| prd: <path> | prd-rev: git:<hash>] -->` (specify.md, Machine comment).
+- Prefix line right below the title, in the form `Requirement prefix: \`RSV\`.`.
+- `## Context` and `## Requirements` present, without a duplicated section; every `##` in the Sections list (specify.md, Sections), with the section inherited from the PRD as the only tolerance.
+- Every requirement with one `SHALL` per line, in an EARS pattern (WHEN, WHILE, WHERE, IF or `The <system> SHALL`), in the form `- **PFX-NN** — text`, without vague terms.
+- ID prefix equal to the declared one; unique IDs; a retired ID (`Retired:` line) not reused; a skipped number only when it is among the retired ones.
+- Prefix distinct from every prefix declared in a PRD and not sharing the first two letters with any of them.
+- With `prd:`: the PRD exists; `prd-rev` equal to `git hash-object <prd>`; every `X-nn` or `X-NFR-nn` citation resolves to a definition in the PRD; `## Traceability` present, with every FR in scope and every scenario of the Acceptance Criteria table that cites an FR in scope, and only EARS IDs that exist in the spec; a line with only PRD IDs that no requirement cites starts with `Design criterion:`.
+- Context with 3 to 5 lines; Requirements with `###` subheadings from 8 requirements and without them below that.
+- Tags only `[ASSUMPTION]` and `[GAP]`; no placeholder, hedging or meta-narration; every local Markdown link resolves.
 
 ### Design
 
-- Comentário de máquina `<!-- sdd: design | spec: ../spec.md [| scope: ...] -->` cujo `spec:` resolve para arquivo; todo ID em `scope:` existe na spec.
-- Toda `##` na lista de Seções, na ordem dela, sem seção vazia ou reduzida a "Nenhuma.", "None." ou "N/A" (design.md, Seções).
-- Sem `## Approaches`, a última linha de `## Evaluation Criteria` é `No real alternative: <motivo>`; com a seção, essa linha não existe.
-- Todo requisito `IF ... THEN` da spec (no escopo) citado em `## Error Handling`.
-- Seção com mais de dez linhas de corpo só quando o assunto dela aparece em `## Risks and Techniques`; em `## Components`, cada `- **Purpose:**` com uma frase e um propósito.
-- Todo bloco Mermaid lido linha a linha: fence fechado, sintaxe que renderiza, nenhuma palavra reservada como alias.
-- Tags só `[ASSUMPTION]` e `[GAP]`; nenhum placeholder, hedging ou meta-narração.
+- Machine comment `<!-- sdd: design | spec: ../spec.md [| scope: ...] -->` whose `spec:` resolves to a file; every ID in `scope:` exists in the spec.
+- Every `##` in the Sections list, in its order, without a section empty or reduced to "None." or "N/A" (design.md, Sections).
+- Without `## Approaches`, the last line of `## Evaluation Criteria` is `No real alternative: <reason>`; with the section, that line does not exist.
+- Every `IF ... THEN` requirement of the spec (in scope) cited in `## Error Handling`.
+- A section with more than ten body lines only when its subject appears in `## Risks and Techniques`; in `## Components`, each `- **Purpose:**` with one sentence and one purpose.
+- Every Mermaid block read line by line: closed fence, syntax that renders, no reserved word as an alias.
+- Tags only `[ASSUMPTION]` and `[GAP]`; no placeholder, hedging or meta-narration.
 
 ### Tasks
 
-- Comentário de máquina `<!-- sdd: tasks | spec: ../spec.md [| design: ./design.md] [| scope: ...] -->` cujos destinos resolvem para arquivo.
-- Parágrafo "How this repository tests" antes de `## Gate Commands`, com a contagem-base de testes do gate Build.
-- `## Gate Commands`, `## Execution Plan` e `## Traceability` presentes; toda `##` na lista de Seções (tasks.md, Seções do `tasks.md`).
-- Tabela Gate Commands com linhas só entre `quick`, `full`, `build` e `Mutation`, nenhuma célula de comando vazia; a linha `Mutation` presente quando a tabela Risks and Techniques do design tem risco que obriga mutação (verify.md, Mutation); todo valor de `Gate` usado tem linha.
-- Cada task `### Tn:` ou `### TCn:` com ID único e os campos What, Where, Depends on, Requirement, Interfaces, Done when, Tests e Gate, uma vez cada e preenchidos (tasks.md, Campos).
-- `Done when` com o comando do gate da task entre crases, copiado da tabela, e ao menos um critério de comportamento; `Tests` e `Gate` na combinação que o campo `Gate` fixa; última task de cada fase com `build`.
-- Todo requisito da spec (no escopo) com task e toda task com ao menos um requisito existente; `## Traceability` coerente com os campos `Requirement` nos dois sentidos.
-- Dependências só para trás na ordem do plano, sem ciclo e sem `T` dependendo de `TC`; toda task citada no plano com corpo e toda task `T` com corpo citada no plano.
-- `What` com um entregável; `Where` com paths reconhecíveis; `Tests` `none` só quando todo path de `Where` é config, schema ou migration.
-- Tags só `[ASSUMPTION]` e `[GAP]`; nenhum placeholder, hedging ou meta-narração.
+- Machine comment `<!-- sdd: tasks | spec: ../spec.md [| design: ./design.md] [| scope: ...] -->` whose targets resolve to files.
+- "How this repository tests" paragraph before `## Gate Commands`, with the base test count of the Build gate.
+- `## Gate Commands`, `## Execution Plan` and `## Traceability` present; every `##` in the Sections list (tasks.md, Sections of `tasks.md`).
+- Gate Commands table with rows only among `quick`, `full`, `build` and `Mutation`, no empty command cell; the `Mutation` row present when the Risks and Techniques table of the design has a risk that requires mutation (verify.md, Mutation); every `Gate` value used has a row.
+- Each task `### Tn:` or `### TCn:` with a unique ID and the fields What, Where, Depends on, Requirement, Interfaces, Done when, Tests and Gate, once each and filled in (tasks.md, Fields).
+- `Done when` with the gate command of the task in backticks, copied from the table, and at least one behavior criterion; `Tests` and `Gate` in the combination the `Gate` field fixes; the last task of each phase with `build`.
+- Every spec requirement (in scope) with a task and every task with at least one existing requirement; `## Traceability` consistent with the `Requirement` fields in both directions.
+- Dependencies only backwards in the plan order, without a cycle and without a `T` depending on a `TC`; every task cited in the plan with a body and every `T` task with a body cited in the plan.
+- `What` with one deliverable; `Where` with recognizable paths; `Tests` `none` only when every path in `Where` is config, schema or migration.
+- Tags only `[ASSUMPTION]` and `[GAP]`; no placeholder, hedging or meta-narration.
 
 ### ADR
 
-- Título `# ADR NNNN: título`; linha `Participants:` com nome antes da primeira `##`.
-- `## Context`, `## Decision`, `## Alternatives considered` e `## Consequences` presentes, nessa ordem, sem seção vazia; nenhuma `##` fora dessas e de `## Derived rules`, que quando existe é a última (adr.md, Template).
-- Alternativas consideradas com tabela preenchida: cada linha com alternativa e razão.
-- Consequências com a linha `- Negative: <texto>`.
-- `## Derived rules` com ao menos um bullet, cada um com o path do arquivo onde a regra vive entre crases (adr.md, Conformar e superseder).
-- `Supersedes: NNNN` e `Superseded by: NNNN` apontando para ADR existente na pasta, com a linha recíproca na outra ADR.
-- Tags só `[ASSUMPTION]` e `[GAP]`; nenhum placeholder, hedging ou meta-narração.
+- Title `# ADR NNNN: title`; `Participants:` line with a name before the first `##`.
+- `## Context`, `## Decision`, `## Alternatives considered` and `## Consequences` present, in that order, without an empty section; no `##` outside those and `## Derived rules`, which when it exists is the last (adr.md, Template).
+- Alternatives considered with a filled table: each row with alternative and reason.
+- Consequences with the line `- Negative: <text>`.
+- `## Derived rules` with at least one bullet, each with the path of the file where the rule lives in backticks (adr.md, Conform and supersede).
+- `Supersedes: NNNN` and `Superseded by: NNNN` pointing to an ADR existing in the folder, with the reciprocal line in the other ADR.
+- Tags only `[ASSUMPTION]` and `[GAP]`; no placeholder, hedging or meta-narration.
 
-### Forma mantida por pedido ou convenção
+### Form kept by request or convention
 
-Pedido válido para manter um achado de forma nomeia literalmente a seção, o campo ou a forma de onde ele sai, por exemplo "inclua uma seção Plano de Rollout no design". Convenção válida é forma comprovada em pelo menos três artefatos commitados do mesmo tipo, ou escrita no CLAUDE.md do repositório. Diga o número de exemplares no chat.
+A valid request to keep a form finding literally names the section, the field or the form it comes from, for example "include a Rollout Plan section in the design". A valid convention is form proven in at least three committed artifacts of the same type, or written in the repository's CLAUDE.md. Say the number of specimens in the chat.
 
-Para reconhecer uma convenção por exemplos, use a versão dos arquivos presente em HEAD. Liste os arquivos com `git ls-tree -r --name-only HEAD -- docs/specs` e filtre os Markdown do tipo em análise: `spec.md`, `design.md` ou `tasks.md`, separadamente. Leia cada exemplo com `git show "HEAD:<caminho>"`. A convenção precisa aparecer em pelo menos três desses exemplos. Um arquivo apenas staged ou untracked não conta. Uma alteração local em arquivo já commitado também não altera a convenção de HEAD. Se HEAD não existir, não há convenção comprovada por exemplos; a convenção escrita no guia do repositório continua sendo uma fonte válida. Para ADR, aplique o diretório e a seleção de (adr.md, Arquivo).
+To recognize a convention by examples, use the version of the files present in HEAD. List the files with `git ls-tree -r --name-only HEAD -- docs/specs` and filter the Markdown files of the type under analysis: `spec.md`, `design.md` or `tasks.md`, separately. Read each example with `git show "HEAD:<path>"`. The convention must appear in at least three of those examples. A file that is only staged or untracked does not count. A local change to an already committed file also does not change the HEAD convention. If HEAD does not exist, there is no convention proven by examples; the convention written in the repository guide is still a valid source. For ADRs, apply the directory and selection of (adr.md, File).
 
-### Heurísticas de redação
+### Writing heuristics
 
-Escreva de forma declarativa. Hedging, meta-narração, placeholder e tag fora de `[ASSUMPTION]` e `[GAP]` são achados da checagem de forma nos quatro artefatos. A revisão aplica (prose.md, Checklist editorial), sem novo ciclo de estilo.
+Write declaratively. Hedging, meta-narration, placeholders and tags other than `[ASSUMPTION]` and `[GAP]` are form-check findings in all four artifacts. The review applies (prose.md, Editorial checklist), without a new style cycle.
 
-Checagem de forma limpa comprova o esqueleto; a revisão confere o conteúdo.
+A clean form check proves the skeleton; the review checks the content.
 
-## Revisão por entrada
+## Review per entry point
 
-Faça esta revisão antes de apresentar cada artefato, depois da checagem de forma. Vale para todas as entradas: nenhuma seção existe só para cumprir a forma.
+Do this review before presenting each artifact, after the form check. It applies to every entry point: no section exists only to satisfy form.
 
-A lista da entrada é fechada. Em Specify, Design, Tasks e ADR:
+The list of the entry point is closed. In Specify, Design, Tasks and ADR:
 
-- percorra o artefato inteiro para cada item e dê ao item a nota `max(0, 100 - 20 × ocorrências)`; uma ocorrência já derruba o item, e a nota existe para registrar quantas;
-- item abaixo de 90 é reescrito; item com 90 ou mais fica como está;
-- reescreveu, dê nota de novo: são no máximo duas passadas por artefato;
-- item que continuar abaixo de 90 na segunda passada não segura o artefato: apresente e diga no chat qual item é, com a nota e o que falta.
+- go through the whole artifact for each item and give the item the score `max(0, 100 - 20 × occurrences)`; one occurrence already brings the item down, and the score exists to record how many;
+- an item below 90 is rewritten; an item at 90 or above stays as it is;
+- if you rewrote, score again: there are at most two passes per artifact;
+- an item that remains below 90 in the second pass does not hold the artifact: present it and say in the chat which item it is, with the score and what is missing.
 
-Em Execute e Verify os itens são binários, atendido ou não: item não atendido se corrige dentro dos tetos do próprio ciclo (execute.md, Ciclo por task; verify.md, Gaps e tasks de correção).
+In Execute and Verify the items are binary, satisfied or not: an unsatisfied item is fixed within the ceilings of its own cycle (execute.md, Per-task cycle; verify.md, Gaps and correction tasks).
 
-| Ocorrências | Nota | Ação |
+| Occurrences | Score | Action |
 |---|---|---|
-| 0 | 100 | Item passa |
-| 1 | 80 | Corrigir o item |
-| 2 | 60 | Corrigir o item |
-| 3 | 40 | Corrigir o item |
-| 4 | 20 | Corrigir o item |
-| 5 ou mais | 0 | Corrigir o item |
+| 0 | 100 | Item passes |
+| 1 | 80 | Fix the item |
+| 2 | 60 | Fix the item |
+| 3 | 40 | Fix the item |
+| 4 | 20 | Fix the item |
+| 5 or more | 0 | Fix the item |
 
-### Revalidação após revisão
+### Revalidation after review
 
-A revisão vem depois da checagem de forma. Se alterou o artefato, repita a checagem de forma sobre os trechos alterados; corrija o que achar uma vez e releia para conferir. Se persistir, liste no chat. Essa passada extra não reabre indefinidamente a revisão. O checklist editorial (prose.md, Checklist editorial) concretiza a revisão existente, sem nota, seção ou ciclo adicional.
+The review comes after the form check. If it changed the artifact, repeat the form check on the changed passages; fix what you find once and reread to confirm. If it persists, list it in the chat. That extra pass does not reopen the review indefinitely. The editorial checklist (prose.md, Editorial checklist) makes the existing review concrete, without a score, section or additional cycle.
 
 ### Specify
 
-- `SHALL`, ID único e padrão EARS já estão na checagem de forma; aqui: o padrão está correto, o valor de cada requisito é concreto e dá para escrever o teste que o afirma. Se não dá, reescreva o requisito.
-- Cada cenário dos Acceptance Criteria do PRD aparece na Traceability com os IDs EARS que o cobrem: a presença já está na checagem de forma quando o PRD os lista em tabela; aqui, os IDs listados de fato cobrem o cenário.
-- Requisito que vem do PRD cita o ID e não reescreve a regra.
-- Nenhuma regra de negócio foi decidida por premissa nova na spec; premissa herdada do PRD, com origem anotada, não conta.
-- Toda inferência está marcada.
-- Se o Design vai precisar decidir comportamento, a spec ficou incompleta.
+- `SHALL`, unique ID and EARS pattern are already in the form check; here: the pattern is correct, the value of each requirement is concrete and the test that asserts it can be written. If it cannot, rewrite the requirement.
+- Each scenario of the PRD's Acceptance Criteria appears in the Traceability with the EARS IDs that cover it: presence is already in the form check when the PRD lists them in a table; here, the listed IDs actually cover the scenario.
+- A requirement that comes from the PRD cites the ID and does not rewrite the rule.
+- No business rule was decided by a new assumption in the spec; an assumption inherited from the PRD, with its origin noted, does not count.
+- Every inference is tagged.
+- If Design will need to decide behavior, the spec is incomplete.
 
 ### Design
 
-- Profundidade proporcional ao risco: a checagem de forma marca a seção acima de dez linhas de corpo; aqui você decide, para cada seção marcada, se o assunto dela aparece em Risks and Techniques — se não aparece, é inflação e a seção encolhe. Risco sem técnica ou aceite é buraco.
-- Critérios fixados e criticados antes das abordagens; a quarta pergunta (existe forma mais barata ou menos arriscada de fazer o mesmo?) respondida.
-- Nenhum comportamento decidido aqui que devia estar na spec.
-- Interfaces com tipos; a cobertura de todo `IF/THEN` da spec no tratamento de erros já está na checagem de forma.
-- ADRs conformadas ou supersedidas (adr.md, Conformar e superseder).
+- Depth proportional to risk: the form check marks the section above ten body lines; here you decide, for each marked section, whether its subject appears in Risks and Techniques — if it does not, it is inflation and the section shrinks. A risk without a technique or acceptance is a hole.
+- Criteria fixed and criticized before the approaches; the fourth question (is there a cheaper or less risky way to do the same?) answered.
+- No behavior decided here that should have been in the spec.
+- Interfaces with types; the coverage of every `IF/THEN` of the spec in error handling is already in the form check.
+- ADRs conformed to or superseded (adr.md, Conform and supersede).
 
 ### Tasks
 
-- Cobertura requisito para task e task para requisito já está na checagem de forma; aqui: nenhuma task cita em `Requirement` um ID que ela não exercita.
-- `Consumes` e `Produces` consistentes entre as tasks e com o design, suficientes sem ler outra task; o executor também lê os requisitos citados e o trecho pertinente do design (tasks.md, Interfaces).
-- `Tests` coerente com a camada da task, com teste co-locado.
-- `Done when` com critério de comportamento que a spec define; a checagem de forma já exige que o comando entre crases seja o do gate da task e que exista critério além dele; o conteúdo do critério é você quem confere.
+- Coverage requirement to task and task to requirement is already in the form check; here: no task cites in `Requirement` an ID it does not exercise.
+- `Consumes` and `Produces` consistent between the tasks and with the design, sufficient without reading another task; the executor also reads the cited requirements and the pertinent passage of the design (tasks.md, Interfaces).
+- `Tests` consistent with the layer of the task, with co-located tests.
+- `Done when` with a behavior criterion the spec defines; the form check already requires that the command in backticks be the task's gate and that a criterion beyond it exist; the content of the criterion is yours to check.
 
 ### ADR
 
-Quatro itens, os que a checagem de forma não alcança porque são conteúdo, não forma:
+Four items, those the form check does not reach because they are content, not form:
 
-- A decisão fixa convenção, restrição ou padrão que features futuras seguem; decisão local à feature é ocorrência, e o destino dela é o design (adr.md, Quando a decisão é de projeto).
-- Cada linha de Alternativas consideradas é uma alternativa realmente avaliada, derrubada contra os mesmos critérios que sustentam a decisão; alternativa escrita para encher a tabela é ocorrência.
-- A linha `Negative` nomeia o custo aceito desta decisão; risco genérico, que qualquer decisão teria, é ocorrência.
-- Toda regra de projeto que a decisão cria ou altera está em Regras derivadas; o bullet e o path do arquivo já estão na checagem de forma (adr.md, Conformar e superseder), aqui: cada regra listada é mesmo criada ou alterada por esta decisão, e ADR que não cria regra não tem a seção.
+- The decision fixes a convention, constraint or pattern that future features follow; a decision local to the feature is an occurrence, and its destination is the design (adr.md, When a decision is project-wide).
+- Each row of Alternatives considered is an alternative actually evaluated, brought down against the same criteria that support the decision; an alternative written to fill the table is an occurrence.
+- The `Negative` line names the accepted cost of this decision; a generic risk, which any decision would have, is an occurrence.
+- Every project rule the decision creates or alters is in Derived rules; the bullet and the file path are already in the form check (adr.md, Conform and supersede), here: each listed rule is really created or altered by this decision, and an ADR that creates no rule has no section.
 
 ### Execute
 
-- Plano declarado antes do código.
-- Testes da spec falhando antes da implementação.
-- Implementação mínima.
-- Gate verde.
-- Tabela de evidência preenchida.
-- Nenhuma lacuna resolvida em silêncio.
-- Só os arquivos da task tocados.
+- Plan declared before the code.
+- Spec tests failing before the implementation.
+- Minimal implementation.
+- Green gate.
+- Evidence table filled in.
+- No gap resolved silently.
+- Only the files of the task touched.
 
 ### Verify
 
-- Cobertura re-derivada com olhos frescos, com o grau de independência declarado no relatório.
-- Toda linha de evidência com `file:line` e assertion.
-- Lacuna de precisão reportada, nunca aprovada.
-- Os dois eixos percorridos: conformidade à spec e aderência ao design.
-- Gaps ordenados por severidade (verify.md, Relatório no chat) e convertidos em tasks de correção `TCn`.
+- Coverage re-derived with fresh eyes, with the degree of independence declared in the report.
+- Every evidence row with `file:line` and assertion.
+- Precision gap reported, never approved.
+- Both axes covered: spec conformance and design adherence.
+- Gaps ordered by severity (verify.md, Chat report) and converted into `TCn` correction tasks.

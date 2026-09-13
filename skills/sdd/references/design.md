@@ -1,174 +1,174 @@
 # Design
 
-**Objetivo:** definir *como* construir — estrutura, componentes, interfaces e o que reusar — com profundidade proporcional ao **risco** da mudança, não ao seu tamanho. O design não decide comportamento: se uma decisão de comportamento for necessária, volte à spec e resolva lá.
+**Goal:** define *how* to build — structure, components, interfaces and what to reuse — with depth proportional to the **risk** of the change, not to its size. The design does not decide behavior: if a behavior decision is needed, go back to the spec and resolve it there.
 
-Pré-requisito: o da tabela de workflow.md, Abrir uma mudança. Grave o design em `<capability>/NNNN-<change-slug>/design.md`; o layout de pastas e o comentário de máquina estão descritos em specify.md (specify.md, Layout).
+Prerequisite: the one in the table of workflow.md, Opening a change. Save the design in `<capability>/NNNN-<change-slug>/design.md`; the folder layout and the machine comment are described in specify.md (specify.md, Layout).
 
-## Carregar contexto
+## Loading context
 
-Leia, nesta ordem, antes de projetar:
+Read, in this order, before designing:
 
-1. **A `spec.md` da capability.** É o contrato; o design não a reinterpreta.
-2. **As ADRs ativas em `/docs/adr`.** Cada uma é uma restrição de projeto. Quando uma decisão anterior conflita com o que seria melhor para esta feature, a escolha é explícita: conformar-se à ADR ou supersedê-la, pelo procedimento descrito em adr.md. Ignorar a ADR em silêncio cria inconsistência invisível entre features.
-3. **O PRD, quando existe.**
-   - As seções Declared Trade-offs e Dependencies and Risks são restrições do design e fonte de riscos.
-   - Os NFRs são a origem primeira dos critérios de avaliação.
-   - No PRD 0000: o mapa de contextos fixa quem é upstream e a direção de mudança de contrato; o catálogo de eventos fixa o produtor e os consumidores de cada evento; as decisões delegadas a ADR são decisões deste design ou de uma ADR própria.
+1. **The `spec.md` of the capability.** It is the contract; the design does not reinterpret it.
+2. **The active ADRs in `/docs/adr`.** Each one is a project constraint. When a previous decision conflicts with what would be best for this feature, the choice is explicit: conform to the ADR or supersede it, through the procedure described in adr.md. Silently ignoring the ADR creates invisible inconsistency between features.
+3. **The PRD, when it exists.**
+   - The Declared Trade-offs and Dependencies and Risks sections are design constraints and a source of risks.
+   - The NFRs are the first origin of the evaluation criteria.
+   - In PRD 0000: the context map fixes who is upstream and the direction of contract change; the event catalog fixes the producer and the consumers of each event; the decisions delegated to ADR are decisions of this design or of their own ADR.
 
-## Base de código
+## Codebase
 
-Não leia a base inteira; a spec é o guia de foco.
+Do not read the whole codebase; the spec is the focus guide.
 
-1. Identifique os módulos e arquivos ligados ao escopo. Leia a estrutura de diretórios antes de abrir qualquer arquivo.
-2. Leia nesta ordem: interfaces e contratos; entidades de domínio; serviços e casos de uso; infraestrutura. Abra a implementação completa só quando assinatura e nome não bastam.
-3. Declare o que foi lido e o que foi ignorado, na forma: "Analisei X, Y, Z. A e B ficaram fora e podem conter restrições não consideradas."
-4. Separe fato de inferência: o que a base impõe é fato; o que você inferiu de um padrão é `[ASSUMPTION]`. Padrão visto em menos de três arquivos da mesma camada não é convenção do projeto; conte os arquivos rastreados da camada com `git ls-files '<glob da camada>'`, o mesmo limite que decide se a mudança pede design (workflow.md, Quanto artefato a mudança pede).
-5. Toda preocupação encontrada na base (acoplamento, dívida, segredo exposto, N+1, lacuna de teste no caminho da mudança) vira uma linha na seção Risks and Techniques, com mitigação ou aceite. Enquanto você não encontra a decisão que explica o desenho (ADR, commit, PR), essa preocupação fica marcada como `[ASSUMPTION]`: um desenho que parece errado hoje pode ter sido o melhor sob as restrições da época.
-6. Reuso: cada componente novo referencia o componente existente que ele segue; componente sem reuso justifica por quê.
+1. Identify the modules and files tied to the scope. Read the directory structure before opening any file.
+2. Read in this order: interfaces and contracts; domain entities; services and use cases; infrastructure. Open the complete implementation only when signature and name are not enough.
+3. Declare what was read and what was ignored, in the form: "I analyzed X, Y, Z. A and B were left out and may contain constraints not considered."
+4. Separate fact from inference: what the codebase imposes is fact; what you inferred from a pattern is `[ASSUMPTION]`. A pattern seen in fewer than three files of the same layer is not a project convention; count the tracked files of the layer with `git ls-files '<layer glob>'`, the same threshold that decides whether the change needs a design (workflow.md, How much artifact the change needs).
+5. Every concern found in the codebase (coupling, debt, exposed secret, N+1, test gap in the path of the change) becomes a row in the Risks and Techniques section, with a mitigation or an acceptance. As long as you do not find the decision that explains the design (ADR, commit, PR), that concern stays tagged `[ASSUMPTION]`: a design that looks wrong today may have been the best under the constraints of the time.
+6. Reuse: each new component references the existing component it follows; a component without reuse justifies why.
 
-## Do risco à técnica
+## From risk to technique
 
-Antes de preencher as seções do design, liste o que pode falhar caro nesta mudança. Percorra as sete fontes: as dimensões implícitas da spec, as preocupações encontradas na base, integrações, dinheiro, regulação, contrato público e migração. Para cada risco, escolha a técnica que o reduz e faça só aquele trabalho. Risco sem técnica é um aceite registrado, na forma "aceito porque …".
+Before filling in the design sections, list what can fail expensively in this change. Go through the seven sources: the implicit dimensions of the spec, the concerns found in the codebase, integrations, money, regulation, public contract and migration. For each risk, choose the technique that reduces it and do only that work. A risk without a technique is a recorded acceptance, in the form "accepted because …".
 
-| Risco típico | Técnica proporcional |
+| Typical risk | Proportional technique |
 |---|---|
-| Consistência entre contextos, evento perdido | Contrato de domain event explícito; eventual vs forte decidido; outbox ou equivalente |
-| Concorrência, duplicata, retry | Modelo de idempotência; chave; lock otimista; tabela de transições |
-| Integração externa instável | Anti-corruption layer; timeout, retry e circuit breaker declarados; fallback |
-| Dinheiro, cálculo financeiro | Tipos de valor; regras isoladas e testáveis; precisão decimal declarada |
-| Migração, compatibilidade | Estratégia de migração; dupla escrita; rollback |
-| Performance | Orçamento (p95, throughput) e onde é gasto; índice; paginação |
-| Segurança, dado regulado | Fronteira de autorização; retenção; mascaramento; auditoria |
+| Consistency between contexts, lost event | Explicit domain event contract; eventual vs strong decided; outbox or equivalent |
+| Concurrency, duplicates, retry | Idempotency model; key; optimistic lock; transition table |
+| Unstable external integration | Anti-corruption layer; timeout, retry and circuit breaker declared; fallback |
+| Money, financial calculation | Value types; isolated and testable rules; declared decimal precision |
+| Migration, compatibility | Migration strategy; dual write; rollback |
+| Performance | Budget (p95, throughput) and where it is spent; index; pagination |
+| Security, regulated data | Authorization boundary; retention; masking; audit |
 
-Não imponha estilo arquitetural: o design fala a língua da base (ports e adapters, aggregates, ou o que houver nela). Introduzir um estilo novo é decisão de projeto e segue adr.md. Cerimônia sem risco que a justifique é peso morto.
+Do not impose an architectural style: the design speaks the language of the codebase (ports and adapters, aggregates, or whatever is in it). Introducing a new style is a project-wide decision and follows adr.md. Ceremony without a risk that justifies it is dead weight.
 
-## Critérios antes das abordagens
+## Criteria before approaches
 
-Quem propõe e quem julga é o mesmo agente; por isso, critério escrito depois da proposta vira racionalização. A ordem é fixa: critérios, crítica dos critérios e só então abordagens.
+Whoever proposes and whoever judges is the same agent; therefore, a criterion written after the proposal becomes rationalization. The order is fixed: criteria, critique of the criteria and only then approaches.
 
-1. **Critérios.** Cada critério tem origem declarada: NFR do PRD, dimensão da spec, ADR, custo ou prazo. Critério é atributo de qualidade ou restrição, nunca mecanismo: "sem ponto único de falha" é critério; "usar Bloom filter" não é.
-2. **Crítica dos critérios.** Pergunte: que critério falta para este tipo de problema (falso positivo em segurança, frescor do dado, custo de operação)? Que trade-off decide a escolha e ainda não está fixado? Critério de negócio ausente volta ao PRD como pergunta; critério de solution space segue os ramos abaixo (workflow.md, Tags e dúvidas).
-3. **Abordagens.** Alternativa real é a abordagem que atende a todos os critérios e troca de lugar com a recomendada em pelo menos um deles; a seção existe só quando há uma. Nesse caso, apresente 2–3 abordagens materialmente viáveis, com o mesmo escopo, avaliadas contra os critérios (que são as colunas da tabela) e contra as quatro perguntas abaixo. A recomendada vem primeiro, com o racional, e é confirmada pelo usuário antes de você detalhar componentes, salvo delegação escrita para o solution space (workflow.md, Tags e dúvidas). Sem alternativa real, a seção não existe; a última linha de Evaluation Criteria diz "No real alternative: <motivo em uma frase>".
+1. **Criteria.** Each criterion has a declared origin: a PRD NFR, a spec dimension, an ADR, cost or deadline. A criterion is a quality attribute or constraint, never a mechanism: "no single point of failure" is a criterion; "use a Bloom filter" is not.
+2. **Critique of the criteria.** Ask: which criterion is missing for this type of problem (false positives in security, data freshness, operating cost)? Which trade-off decides the choice and is not yet fixed? A missing business criterion goes back to the PRD as a question; a solution-space criterion follows the branches below (workflow.md, Tags and doubts).
+3. **Approaches.** A real alternative is an approach that satisfies all the criteria and trades places with the recommended one in at least one of them; the section exists only when there is one. In that case, present 2–3 materially viable approaches, with the same scope, evaluated against the criteria (which are the columns of the table) and against the four questions below. The recommended one comes first, with the rationale, and is confirmed by the user before you detail components, unless there is written delegation for the solution space (workflow.md, Tags and doubts). Without a real alternative, the section does not exist; the last line of Evaluation Criteria says "No real alternative: <one-sentence reason>".
 
-| Situação | Critérios e crítica | Abordagens e espera |
+| Situation | Criteria and critique | Approaches and waiting |
 |---|---|---|
-| Delegação escrita para solution space | Fixe os critérios e critique-os | Decida a abordagem; permanece a apresentação/aprovação do artefato |
-| Sem delegação; todos os critérios vêm de NFR do PRD e a crítica não encontrou lacuna | Apresente critérios, crítica e recomendação juntos, numa única espera | Depois da resposta, avalie alternativa real; se houver, a confirmação da abordagem do item 3 é a segunda e única espera adicional |
-| Demais casos, sem delegação | Apresente critérios e crítica e espere a resposta antes de propor abordagem | A abordagem com alternativa real exige confirmação antes de detalhar componentes, conforme item 3 |
+| Written delegation for the solution space | Fix the criteria and critique them | Decide the approach; the presentation/approval of the artifact remains |
+| No delegation; all criteria come from PRD NFRs and the critique found no gap | Present criteria, critique and recommendation together, in a single wait | After the answer, evaluate a real alternative; if there is one, the confirmation of the approach from item 3 is the second and only additional wait |
+| Other cases, without delegation | Present criteria and critique and wait for the answer before proposing an approach | An approach with a real alternative requires confirmation before detailing components, as item 3 says |
 
-Convenção conflitante deve ser exposta pela precedência (workflow.md, Tags e dúvidas). Não invente alternativas para preencher quantidade; critérios → crítica → abordagens permanece a ordem.
+A conflicting convention must be exposed through precedence (workflow.md, Tags and doubts). Do not invent alternatives to fill a quota; criteria → critique → approaches remains the order.
 
-### As quatro perguntas de uma decisão arquitetural
+### The four questions of an architectural decision
 
-1. Atende aos objetivos de negócio?
-2. Respeita os atributos de qualidade?
-3. Respeita as restrições (ADRs, base, regulação, time)?
-4. **Existe forma mais barata ou menos arriscada de fazer o mesmo?**
+1. Does it meet the business objectives?
+2. Does it respect the quality attributes?
+3. Does it respect the constraints (ADRs, codebase, regulation, team)?
+4. **Is there a cheaper or less risky way to do the same?**
 
-A quarta é sempre respondida: complexidade (componentes × interconexões) é custo, e complexidade não justificada é custo desnecessário.
+The fourth is always answered: complexity (components × interconnections) is cost, and unjustified complexity is unnecessary cost.
 
-## Componentes, contratos e dados
+## Components, contracts and data
 
-- **Componentes.** Para cada componente: propósito em uma frase (sem "e"), path real, interfaces com tipos, dependências e o que reusa. As interfaces vêm antes da implementação: são o que as tasks consomem.
-- **Domain events.** Para cada evento: produtor, consumidores conhecidos, payload semântico, chave de partição ou de ordenação, garantia de entrega e versionamento. At-least-once é a garantia normal; a idempotência do consumidor é o que torna a reentrega segura. Evento mal documentado é acoplamento implícito entre contextos.
-- **Data Model.** Presente quando a feature toca persistência: entidades, relacionamentos, invariantes e migração.
-- **Tratamento de erro.** Uma linha por cenário: cenário (com o ID do requisito), tratamento e impacto. Todo `IF … THEN` da spec aparece aqui, com o mecanismo escolhido para tratá-lo.
+- **Components.** For each component: purpose in one sentence (without "and"), real path, interfaces with types, dependencies and what it reuses. The interfaces come before the implementation: they are what the tasks consume.
+- **Domain events.** For each event: producer, known consumers, semantic payload, partition or ordering key, delivery guarantee and versioning. At-least-once is the normal guarantee; the consumer's idempotency is what makes redelivery safe. A poorly documented event is implicit coupling between contexts.
+- **Data Model.** Present when the feature touches persistence: entities, relationships, invariants and migration.
+- **Error handling.** One row per scenario: scenario (with the requirement ID), handling and impact. Every `IF … THEN` of the spec appears here, with the mechanism chosen to handle it.
 
-### Forma de escrita
+### Writing form
 
-Descreva cada escolha com o elemento afetado, a decisão e a restrição que a justifica. Nas tabelas, compare alternativas pelos mesmos critérios. Em componentes, mantenha propósito, localização, interfaces, dependências e reuso. Preserve as assinaturas e os limites já aprovados. Um adjetivo de qualidade precisa apontar para o risco, requisito ou critério que o sustenta. A explicação de uma decisão pode ocupar um parágrafo; não a fragmente em bullets independentes quando as frases formam o mesmo raciocínio.
+Describe each choice with the affected element, the decision and the constraint that justifies it. In tables, compare alternatives by the same criteria. In components, keep purpose, location, interfaces, dependencies and reuse. Preserve the signatures and limits already approved. A quality adjective must point to the risk, requirement or criterion that supports it. The explanation of a decision may take a paragraph; do not fragment it into independent bullets when the sentences form the same reasoning.
 
-## Unidade de deploy e reuso
+## Deployment unit and reuse
 
-### Três conceitos
+### Three concepts
 
-São conceitos distintos; diga sempre de qual está falando:
+They are distinct concepts; always say which one you are talking about:
 
-- **Módulo:** fronteira de código — assembly, pacote ou namespace com interface pública.
-- **Pacote de release:** o que é versionado e publicado.
-- **Unidade de deploy:** o que sobe e cai junto.
+- **Module:** a code boundary — assembly, package or namespace with a public interface.
+- **Release package:** what is versioned and published.
+- **Deployment unit:** what goes up and down together.
 
-### Ordem de preferência
+### Order of preference
 
-1. Mudança no deployável existente.
-2. Módulo novo no deployável existente.
-3. Deployável novo.
+1. A change in the existing deployable.
+2. A new module in the existing deployable.
+3. A new deployable.
 
-O que justifica um deployável novo é demanda de **deploy independente**: time com ritmo próprio, stack diferente, estrangulamento de legado. Escalabilidade, resiliência e "separação de responsabilidades" não justificam sozinhos, porque réplica e módulo entregam o mesmo. Um deployável novo carrega contrato de interface, versionamento, compatibilidade retroativa e um dono nomeado.
+What justifies a new deployable is a demand for **independent deployment**: a team with its own cadence, a different stack, strangling a legacy. Scalability, resilience and "separation of responsibilities" do not justify it on their own, because a replica and a module deliver the same. A new deployable carries an interface contract, versioning, backward compatibility and a named owner.
 
-Desvio da ordem de preferência registra o porquê na tabela de Technical Decisions, não em seção própria.
+A deviation from the order of preference records the why in the Technical Decisions table, not in its own section.
 
-### Biblioteca compartilhada e fronteiras de módulo
+### Shared library and module boundaries
 
-- Biblioteca compartilhada só entra com três condições: um dono; estabilidade, isto é, a interface pública não mudou nas últimas três mudanças que a tocaram; e ausência de pacote público equivalente.
-- Regra de negócio não vive em biblioteca de plataforma. `Utils` ou `Shared` como destino é o cheiro dessa regra não aplicada.
-- Sem ciclo entre módulos com fronteira própria; um módulo é consumido só pela sua interface pública.
+- A shared library only enters with three conditions: an owner; stability, that is, the public interface did not change in the last three changes that touched it; and the absence of an equivalent public package.
+- A business rule does not live in a platform library. `Utils` or `Shared` as a destination is the smell of that rule not being applied.
+- No cycle between modules with their own boundary; a module is consumed only through its public interface.
 
 ## Technical Decisions
 
-Registre só as decisões em que outra escolha também atendia aos critérios de avaliação, em tabela com quatro colunas: decisão, escolha, racional e tipo. O tipo distingue:
+Record only the decisions in which another choice also met the evaluation criteria, in a table with four columns: decision, choice, rationale and type. The type distinguishes:
 
-- **Contrato público:** API, evento, formato persistido ou exposto a terceiros. Muda com versionamento e aviso.
-- **Decisão interna:** muda sem aviso.
+- **Public contract:** API, event, persisted format or one exposed to third parties. Changes with versioning and notice.
+- **Internal decision:** changes without notice.
 
-Decisão que fixa convenção, restrição ou padrão para features futuras vira ADR, no formato de adr.md; decisão local à feature fica só na tabela.
+A decision that fixes a convention, constraint or pattern for future features becomes an ADR, in the adr.md format; a decision local to the feature stays only in the table.
 
-## Seções
+## Sections
 
-Cada seção existe quando há o que dizer; nenhuma seção vazia. A lista é fechada: a checagem de forma acusa a seção `##` fora dela e a seção fora desta ordem (validation.md, Checagem de forma). O heading é fixo em inglês seja qual for o idioma da prosa (workflow.md, Idioma). Na ordem do documento:
+Each section exists when there is something to say; no empty section. The list is closed: the form check flags a `##` section outside it and a section out of this order (validation.md, Form check). The heading is fixed in English whatever the language of the prose (workflow.md, Language). In document order:
 
-1. Design Context — restrições da spec, do PRD e das ADRs; base lida e base ignorada.
+1. Design Context — constraints from the spec, the PRD and the ADRs; codebase read and codebase ignored.
 2. Evaluation Criteria.
 3. Risks and Techniques.
-4. Approaches — só quando há alternativa real.
-5. Architecture Overview — um parágrafo e, quando três ou mais componentes trocam mensagens, um diagrama Mermaid.
-6. Deployment Unit — uma linha quando a mudança fica no deployável existente.
+4. Approaches — only when there is a real alternative.
+5. Architecture Overview — one paragraph and, when three or more components exchange messages, a Mermaid diagram.
+6. Deployment Unit — one line when the change stays in the existing deployable.
 7. Components.
 8. Domain Events.
 9. Data Model.
-10. Error Handling (Error handling).
+10. Error Handling.
 11. Technical Decisions.
-12. Files to Create or Modify — insumo direto do `tasks.md`.
+12. Files to Create or Modify — direct input to `tasks.md`.
 
-Exemplo didático completo de formato; dados, contratos e decisões abaixo não afirmam adoção pelo projeto.
+Complete didactic format example; the data, contracts and decisions below do not claim adoption by the project.
 
 ## Template
 
 ```markdown
 <!-- sdd: design | spec: ../spec.md | scope: RSV-07, RSV-08, RSV-09, RSV-10, RSV-11, RSV-12 -->
-# Reserva Parcial — Design
+# Partial Reservation — Design
 
 ## Design Context
 
-Spec: RSV-07 a RSV-12. ADR 0001 (outbox) restringe a publicação de eventos. Base lida: `src/ReservationBook/Reservations/*`; ignorado: `src/ReservationBook/Reports/*`.
+Spec: RSV-07 to RSV-12. ADR 0001 (outbox) constrains event publication. Codebase read: `src/ReservationBook/Reservations/*`; ignored: `src/ReservationBook/Reports/*`.
 
 ## Evaluation Criteria
 
-| # | Critério | Origem |
+| # | Criterion | Origin |
 |---|---|---|
-| C1 | O livro lido pelo Allocation é idêntico ao congelado | BOOK-NFR-02 |
-| C2 | Resultado visível em até 5s após `BookProcessed` | usuário, nesta sessão |
+| C1 | The book read by Allocation is identical to the frozen one | BOOK-NFR-02 |
+| C2 | Result visible within 5s after `BookProcessed` | user, in this session |
 
-No real alternative: a ADR 0001 já fixa o transporte e a spec fixa o comportamento.
+No real alternative: ADR 0001 already fixes the transport and the spec fixes the behavior.
 
 ## Risks and Techniques
 
-| Risco | Fonte | Técnica | Onde |
+| Risk | Source | Technique | Where |
 |---|---|---|---|
-| Duplicata por retry do canal | RSV-10 | Idempotency key persistida; unicidade (investorId, offerId) | `ReservationService` |
+| Duplicate due to channel retry | RSV-10 | Persisted idempotency key; uniqueness (investorId, offerId) | `ReservationService` |
 
 ## Architecture Overview
 
-[Parágrafo; diagrama Mermaid pelo critério da seção Seções.]
+[Paragraph; Mermaid diagram by the criterion of the Sections section.]
 
 ## Deployment Unit
 
-Fica em `src/ReservationBook`.
+Stays in `src/ReservationBook`.
 
 ## Components
 
 ### ReservationService
-- **Purpose:** manter o livro de reservas de uma oferta publicada.
+- **Purpose:** keep the reservation book of a published offering.
 - **Location:** `src/ReservationBook/Reservations/ReservationService.cs`
 - **Interfaces:** `Place(PlaceReservation cmd, CancellationToken ct): Task<Result<Reservation, ReservationError>>`
 - **Dependencies:** `IOfferReader`, `IReservationStore`
@@ -176,35 +176,35 @@ Fica em `src/ReservationBook`.
 
 ## Error Handling
 
-| Cenário (ID) | Tratamento | Impacto |
+| Scenario (ID) | Handling | Impact |
 |---|---|---|
-| Posição acima do máximo (RSV-11) | `Result.Failure(POSITION_ABOVE_MAXIMUM)`; 422 no endpoint | Operador vê a posição resultante |
+| Position above the maximum (RSV-11) | `Result.Failure(POSITION_ABOVE_MAXIMUM)`; 422 at the endpoint | Operator sees the resulting position |
 
 ## Technical Decisions
 
-| Decisão | Escolha | Racional | Tipo |
+| Decision | Choice | Rationale | Type |
 |---|---|---|---|
-| Ordem de registro | Contador por oferta, não instante | BOOK-14 exige ordem total com instantes iguais | interna |
+| Registration order | Counter per offering, not instant | BOOK-14 requires a total order with equal instants | internal |
 
 ## Files to Create or Modify
 
-- `src/ReservationBook/Reservations/ReservationService.cs` — novo
-- `tests/UnitTests/Reservations/ReservationServiceTests.cs` — novo
+- `src/ReservationBook/Reservations/ReservationService.cs` — new
+- `tests/UnitTests/Reservations/ReservationServiceTests.cs` — new
 ```
 
-Depois de gravar, faça a checagem de forma, inclusive dos diagramas (validation.md, Checagem de forma), e a revisão da entrada; depois apresente o design e espere antes de começar as Tasks.
+After saving, do the form check, including the diagrams (validation.md, Form check), and the review of the entry point; then present the design and wait before starting the Tasks.
 
-### Exemplo didático parcial de reescrita
+### Partial didactic rewrite example
 
-Fragmento de escrita; não é um artefato completo nem evidência de uma execução real.
+A writing fragment; not a complete artifact nor evidence of a real execution.
 
 ```text
-Antes: Será realizada a atribuição da ordem de registro através de um
-contador por oferta, tendo em vista a necessidade de garantir ordem total
-quando os instantes forem iguais, estabelecida em BOOK-14.
+Before: The assignment of the registration order will be carried out by
+means of a counter per offering, in view of the need to guarantee a total
+order when the instants are equal, as established in BOOK-14.
 
-Depois: Um contador por oferta define a ordem de registro. BOOK-14 exige
-uma ordem total mesmo quando os instantes são iguais.
+After: A counter per offering defines the registration order. BOOK-14
+requires a total order even when the instants are equal.
 
-Preservado: mecanismo da decisão e requisito que o justifica.
+Preserved: mechanism of the decision and the requirement that justifies it.
 ```
