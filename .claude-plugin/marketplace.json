@@ -1,0 +1,11 @@
+{
+  "name": "claude-skills",
+  "owner": { "name": "Guilherme Salvi", "url": "https://github.com/guilhermesalvi" },
+  "plugins": [
+    {
+      "name": "claude-skills",
+      "source": "./",
+      "description": "Product requirements (prd), spec-driven development (sdd) and Whisper transcript correction (transcript-fix) skills."
+    }
+  ]
+}
